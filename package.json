@@ -1,0 +1,8 @@
+{
+  "name": "solveit-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "LucasSonego",
+  "license": "MIT"
+}
