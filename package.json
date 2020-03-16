@@ -4,5 +4,8 @@
   "description": "",
   "main": "index.js",
   "author": "LucasSonego",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
