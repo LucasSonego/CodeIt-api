@@ -89,3 +89,6 @@ typings/
 
 #yarn cache file
 yarn.lock
+
+# Local database used on tests
+database.sqlite
