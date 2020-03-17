@@ -9,6 +9,7 @@ if (process.env.NODE_ENV === "test") {
       underscored: true,
       underscoredAll: true,
     },
+    logging: false,
   };
 } else {
   module.exports = {
@@ -23,5 +24,6 @@ if (process.env.NODE_ENV === "test") {
       underscored: true,
       underscoredAll: true,
     },
+    logging: false,
   };
 }
