@@ -18,4 +18,6 @@ routes.get("/tests", (req, res) => {
   });
 });
 
+routes.put("/users", UserController.update);
+
 export default routes;
