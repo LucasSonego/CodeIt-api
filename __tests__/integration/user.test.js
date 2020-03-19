@@ -96,4 +96,89 @@ describe("Teste dos sistemas de Usuario e Sessão", () => {
 
     expect(response.body).toHaveProperty("error");
   });
+
+  test("Editar usuario", async () => {
+    const response = await request(app)
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        name: "Test User 2",
+        email: "testmail2@gmail.com",
+        oldPassword: "123456",
+        password: "654321",
+        is_teacher: false,
+      });
+
+    expect(response.body).toHaveProperty("id", "name", "email", "is_teacher");
+  });
+
+  test("Validação dos campos da requisição", async () => {
+    const response = await request(app)
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        name: "Test User 3",
+        email: "~not an email~",
+        oldPassword: "123456",
+        password: "654321",
+        is_teacher: false,
+      });
+
+    expect(response.body).toHaveProperty("error");
+  });
+
+  test("Validação de autenticação", async () => {
+    const response = await request(app)
+      .put("/users")
+      .send({
+        name: "Test User 2",
+        email: "testmail2@gmail.com",
+        is_teacher: false,
+      });
+
+    expect(response.body).toHaveProperty("error");
+  });
+
+  test("Verificar se já existe um usuario com o novo email enviado", async () => {
+    await request(app)
+      .post("/users")
+      .send({
+        name: "Another Test User",
+        email: "testmail3@gmail.com",
+        password: "123456",
+        is_teacher: false,
+      });
+    const response = await request(app)
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        email: "testmail3@gmail.com",
+      });
+
+    expect(response.body).toHaveProperty("error");
+  });
+
+  test("Verificar se a senha antiga foi enviada na requisição", async () => {
+    const response = await request(app)
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        // oldPassword: "123456",
+        password: "654321",
+      });
+
+    expect(response.body).toHaveProperty("error");
+  });
+
+  test("Verificar se a senha antiga está correta", async () => {
+    const response = await request(app)
+      .put("/users")
+      .set("Authorization", "Bearer " + token)
+      .send({
+        oldPassword: "~senha incorreta~",
+        password: "654321",
+      });
+
+    expect(response.body).toHaveProperty("error");
+  });
 });
