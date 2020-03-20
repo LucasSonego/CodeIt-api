@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { Op } from "sequelize";
+import { Op as is } from "sequelize";
 
 import User from "../models/User";
 
@@ -107,17 +107,23 @@ class UserController {
       });
     }
 
-    let users;
+    let response;
 
     if (req.teachersOnly) {
-      users = await User.findAll({
-        where: { is_teacher: true, id: { [Op.not]: req.userId } },
+      response = await User.findAll({
+        where: { is_teacher: true, id: { [is.not]: req.userId } },
       });
     } else {
-      users = await User.findAll({
-        where: { id: { [Op.not]: req.userId } },
+      response = await User.findAll({
+        where: { id: { [is.not]: req.userId } },
       });
     }
+
+    const users = response.map(user => {
+      const { id, name, email, is_teacher } = user.dataValues;
+
+      return { id, name, email, is_teacher };
+    });
 
     return res.json(users);
   }
