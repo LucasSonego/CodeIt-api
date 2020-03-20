@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { Op } from "sequelize";
 
 import User from "../models/User";
 
@@ -109,9 +110,13 @@ class UserController {
     let users;
 
     if (req.teachersOnly) {
-      users = await User.findAll({ where: { is_teacher: true } });
+      users = await User.findAll({
+        where: { is_teacher: true, id: { [Op.not]: req.userId } },
+      });
     } else {
-      users = await User.findAll();
+      users = await User.findAll({
+        where: { id: { [Op.not]: req.userId } },
+      });
     }
 
     return res.json(users);
