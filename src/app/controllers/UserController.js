@@ -98,6 +98,24 @@ class UserController {
       is_teacher,
     });
   }
+
+  async index(req, res) {
+    if (!req.userId) {
+      return res.status(401).json({
+        error: "Autenticação necessaria",
+      });
+    }
+
+    let users;
+
+    if (req.teachersOnly) {
+      users = await User.findAll({ where: { is_teacher: true } });
+    } else {
+      users = await User.findAll();
+    }
+
+    return res.json(users);
+  }
 }
 
 export default new UserController();

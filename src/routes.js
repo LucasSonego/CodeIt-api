@@ -12,12 +12,16 @@ routes.post("/sessions", SessionController.store);
 
 routes.use(authMiddleware);
 
-routes.get("/tests", (req, res) => {
-  res.json({
-    id: req.userId,
-  });
-});
-
 routes.put("/users", UserController.update);
+
+routes.get("/users", UserController.index);
+routes.get(
+  "/teachers",
+  (req, res, next) => {
+    req.teachersOnly = true;
+    return next();
+  },
+  UserController.index
+);
 
 export default routes;
