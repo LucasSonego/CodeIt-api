@@ -35,7 +35,7 @@ describe("Testes de listagem de usuarios", () => {
       .get("/users")
       .set("Authorization", "Bearer " + token);
 
-    expect(response.body.length).toBe(4);
+    expect(response.body.length).toBe(3);
   });
 
   test("Listar apenas os professores", async () => {
@@ -43,7 +43,7 @@ describe("Testes de listagem de usuarios", () => {
       .get("/teachers")
       .set("Authorization", "Bearer " + token);
 
-    expect(response.body.length).toBe(2);
+    expect(response.body.length).toBe(1);
   });
 
   test("Validação de autenticação", async () => {
