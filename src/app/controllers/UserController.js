@@ -19,7 +19,7 @@ class UserController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: "Um ou mias campos obrigatorios não foram preenchidos",
+        error: "Um ou mais campos não foram preenchidos corretamente",
       });
     }
 
@@ -65,7 +65,7 @@ class UserController {
 
     if (!(await schema.isValid(req.body))) {
       return res.status(400).json({
-        error: "Um ou mais campos não atendem aos requisitos",
+        error: "Um ou mais campos não foram preenchidos corretamente",
       });
     }
 
