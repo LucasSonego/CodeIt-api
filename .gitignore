@@ -87,5 +87,14 @@ typings/
 # DynamoDB Local files
 .dynamodb/
 
+#npm cache file
+package-lock.json
+
 #yarn cache file
 yarn.lock
+
+# Local database used on tests
+database.sqlite
+
+# VS Code debugger configuration
+.vscode
