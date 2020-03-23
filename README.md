@@ -13,6 +13,7 @@
 #### Dados:
 | Campo      | Tipo de dado  | Requisitos            | Obrigatório            |
 | :--------- |:--------------| :-------------------- | :--------------------- |
+| id         | String        | Apenas números        | sim                    |
 | name       | String        | -                     | sim                    |
 | email      | String        | blablabla@blablabla   | sim                    |
 | password   | String        | Ao menos 6 caracteres | sim                    |
