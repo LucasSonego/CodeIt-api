@@ -23,10 +23,10 @@ describe("Testes de criação de usuario", () => {
       .post("/users")
       .send(user);
 
-    expect(response.body).toHaveProperty("id");
+    expect(response.body.id).toBe(user.id);
     expect(response.body.name).toBe(user.name);
     expect(response.body.email).toBe(user.email);
-    expect(response.body).toHaveProperty("is_teacher");
+    expect(response.body.is_teacher).toBe(user.is_teacher);
   });
 
   test("Criptografar senha de usuario antes de enviar ao banco de dados", async () => {
@@ -66,6 +66,19 @@ describe("Testes de criação de usuario", () => {
 
     expect(response.body.error).toBe(
       "Este email já esta cadastrado para outro usuario"
+    );
+  });
+
+  test("Impedir que um usuario se cadastre com um ID já cadastrado", async () => {
+    const user = await factory.attrs("User", {
+      id: globalUser.id,
+    });
+    const response = await request(app)
+      .post("/users")
+      .send(user);
+
+    expect(response.body.error).toBe(
+      "Este ID já esta cadastrado para outro usuario"
     );
   });
 });

@@ -6,6 +6,10 @@ import User from "../models/User";
 class UserController {
   async store(req, res) {
     const schema = yup.object().shape({
+      id: yup
+        .string()
+        .required()
+        .test(value => value && !!value.match(/^[0-9]+$/)),
       name: yup.string().required(),
       email: yup
         .string()
@@ -32,14 +36,29 @@ class UserController {
         error: "Este email já esta cadastrado para outro usuario",
       });
     }
-    const { id, name, email, is_teacher } = await User.create(req.body);
 
-    return res.send({
-      id,
-      name,
-      email,
-      is_teacher,
+    const idAlreadyUsed = await User.findOne({
+      where: { id: req.body.id },
     });
+    if (idAlreadyUsed) {
+      return res.status(409).json({
+        error: "Este ID já esta cadastrado para outro usuario",
+      });
+    }
+
+    try {
+      const { id, name, email, is_teacher } = await User.create(req.body);
+      return res.send({
+        id,
+        name,
+        email,
+        is_teacher,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        error: error.name,
+      });
+    }
   }
 
   async update(req, res) {
