@@ -13,6 +13,7 @@
 #### Dados:
 | Campo      | Tipo de dado  | Requisitos            | Obrigatório            |
 | :--------- |:--------------| :-------------------- | :--------------------- |
+| id         | String        | Apenas números        | sim                    |
 | name       | String        | -                     | sim                    |
 | email      | String        | blablabla@blablabla   | sim                    |
 | password   | String        | Ao menos 6 caracteres | sim                    |
@@ -24,6 +25,7 @@ Metodo: `POST`. <br>
 Rota: `/users`
 ```json
 {
+  "id": "20184906",
   "name": "Lucas Sônego",
   "email": "lucassonego@ufpr.br",
   "password": "123456",
@@ -34,7 +36,7 @@ Rota: `/users`
 #### Corpo da resposta:
 ```json
 {
-  "id": 1,
+  "id": "20184906",
   "name": "Lucas Sônego",
   "email": "lucassonego@ufpr.br",
   "is_teacher": false
@@ -62,7 +64,7 @@ Rota: `/sessions`
 ```json
 {
   "user": {
-    "id": 1,
+    "id": "20184906",
     "name": "Lucas Sônego",
     "email": "lucassonego@ufpr.br",
    },
@@ -100,7 +102,7 @@ O cabeçalho da requisição deve conter o token de autenticação.
 #### Corpo da resposta:
 ```json
 {
-  "id": 1,
+  "id": "20184906",
   "name": "Lucas Sônego",
   "email": "lucassonegoo@gmail.com",
   "is_teacher": true
@@ -126,19 +128,19 @@ O cabeçalho da requisição deve conter o token de autenticação.
 ```json
 [
   {
-    "id": 1,
+    "id": "1",
     "name": "Usuario 1",
     "email": "usuario1@ufpr.br",
     "is_teacher": false
   },
     {
-    "id": 2,
+    "id": "2",
     "name": "Usuario 2",
     "email": "usuario2@ufpr.br",
     "is_teacher": false
   },
     {
-    "id": 3,
+    "id": "3",
     "name": "Usuario 3",
     "email": "usuario3@ufpr.br",
     "is_teacher": true

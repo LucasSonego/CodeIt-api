@@ -1,5 +1,6 @@
 import request from "supertest";
 import app from "../../../src/app";
+import factory from "../../factories";
 
 import truncate from "../../util/truncate";
 
@@ -10,14 +11,15 @@ describe("Testes de listagem de usuarios", () => {
     await truncate();
 
     for (let i = 1; i <= 4; i++) {
+      const userData = await factory.attrs("User", {
+        email: `testuser${i}@gmail.com`,
+        password: "123456",
+        is_teacher: i <= 2,
+      });
+
       await request(app)
         .post("/users")
-        .send({
-          name: `Test User ${i}`,
-          email: `testuser${i}@gmail.com`,
-          password: "123456",
-          is_teacher: i <= 2,
-        });
+        .send(userData);
     }
 
     const response = await request(app)
