@@ -1,4 +1,4 @@
-# Documentação Solve It API
+# Documentação CodeIt API
 ### Sumario:
  - [Usuários](#Usuários)
     - [Cadastro](#Cadastro-de-usuário)
@@ -21,7 +21,7 @@
 
 #### Corpo da requisição:
 
-Metodo: `POST`. <br>
+Método: `POST`. <br>
 Rota: `/users`
 ```json
 {
@@ -86,7 +86,7 @@ Rota: `/sessions`
 | is_teacher  | boolean       | -                                  | não                                        |
 
 #### Corpo da requisição:
-> Método: `PUT`. <br>
+Método: `PUT`. <br>
 Rota: `/sessions` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
@@ -114,13 +114,13 @@ O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Listar todos os usuários
 
-> Metodo `GET` <br>
+Método `GET` <br>
 Rota `/users` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Listar apenas os professores
 
-> Metodo `GET` <br>
+Método `GET` <br>
 Rota `/teachers` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
