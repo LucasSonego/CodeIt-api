@@ -27,13 +27,14 @@ class SessionController {
       });
     }
 
-    const { id, name } = user;
+    const { id, name, is_teacher } = user;
 
     return res.json({
       user: {
         id,
         name,
         email,
+        is_teacher,
       },
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
