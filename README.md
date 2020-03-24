@@ -3,6 +3,7 @@
  - [Usuários](#Usuários)
     - [Cadastro](#Cadastro-de-usuário)
     - [Login](#Login)
+    - [Validação de autenticação](#Validação-de-autenticação)
     - [Editar Dados](#Editar-dados)
     - [Listar](#Listar)
     
@@ -21,7 +22,8 @@
 
 #### Corpo da requisição:
 
-Método: `POST`. <br>
+
+Metodo: `POST` <br>
 Rota: `/users`
 ```json
 {
@@ -51,7 +53,7 @@ Rota: `/users`
 | password   | String        | Ao menos 6 caracteres | sim                    |
 
 #### Corpo da requisição:
-Método: `POST`. <br>
+Método: `POST` <br>
 Rota: `/sessions`
 ```json
 {
@@ -67,8 +69,25 @@ Rota: `/sessions`
     "id": "20184906",
     "name": "Lucas Sônego",
     "email": "lucassonego@ufpr.br",
+    "is_teacher": false
    },
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM..."
+}
+```
+### Validação de autenticação
+#### Corpo da requisição:
+Método: `GET` <br>
+Rota: `/sessions` <br>
+O cabeçalho da requisição deve conter o token de autenticação.
+
+
+#### Corpo da resposta:
+```json
+{
+   "id": 1,
+   "name": "Lucas Sônego",
+   "email": "lucassonego@ufpr.br",
+   "is_teacher": false
 }
 ```
 
@@ -86,7 +105,7 @@ Rota: `/sessions`
 | is_teacher  | boolean       | -                                  | não                                        |
 
 #### Corpo da requisição:
-Método: `PUT`. <br>
+Método: `PUT` <br>
 Rota: `/sessions` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 

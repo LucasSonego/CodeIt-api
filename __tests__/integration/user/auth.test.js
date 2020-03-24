@@ -5,7 +5,7 @@ import factory from "../../factories";
 import truncate from "../../util/truncate";
 
 describe("Testes de validação de autenticação", () => {
-  let token;
+  let token, user;
 
   beforeAll(async () => {
     await truncate();
@@ -15,6 +15,7 @@ describe("Testes de validação de autenticação", () => {
       .post("/users")
       .send(userData);
 
+    user = userData;
     const response = await request(app)
       .post("/sessions")
       .send({
@@ -26,22 +27,26 @@ describe("Testes de validação de autenticação", () => {
 
   test("Validação de autenticação (token correto)", async () => {
     const response = await request(app)
-      .get("/users")
+      .get("/user")
       .set("Authorization", "Bearer " + token);
 
     expect(response.body).not.toHaveProperty("error");
+    expect(response.body.id).toBe(user.id);
+    expect(response.body.name).toBe(user.name);
+    expect(response.body.email).toBe(user.email);
+    expect(response.body.is_teacher).toBe(user.is_teacher);
   });
 
   test("Validação de autenticação (token invalido)", async () => {
     const response = await request(app)
-      .get("/users")
+      .get("/user")
       .set("Authorization", "Bearer " + "~invalid token~");
 
     expect(response.body.error).toBe("Token invalido");
   });
 
   test("Validação de autenticação (sem token)", async () => {
-    const response = await request(app).get("/users");
+    const response = await request(app).get("/user");
 
     expect(response.body.error).toBe("Autenticação necessaria");
   });
