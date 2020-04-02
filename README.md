@@ -106,7 +106,7 @@ O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Corpo da requisição:
 Método: `PUT` <br>
-Rota: `/sessions` <br>
+Rota: `/users` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
 ```json
