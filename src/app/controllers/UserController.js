@@ -11,14 +11,8 @@ class UserController {
         .required()
         .test(value => value && !!value.match(/^[0-9]+$/)),
       name: yup.string().required(),
-      email: yup
-        .string()
-        .required()
-        .email(),
-      password: yup
-        .string()
-        .required()
-        .min(6),
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
       is_teacher: yup.boolean(),
     });
 
@@ -117,19 +111,6 @@ class UserController {
       email,
       is_teacher,
     });
-  }
-
-  async getData(req, res) {
-    if (req.userId) {
-      const userData = await User.findOne({ where: { id: req.userId } });
-
-      return res.json({
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        is_teacher: userData.is_teacher,
-      });
-    }
   }
 
   async index(req, res) {
