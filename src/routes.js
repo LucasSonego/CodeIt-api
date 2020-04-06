@@ -15,7 +15,7 @@ routes.post("/sessions", SessionController.store);
 
 routes.use(authMiddleware);
 
-routes.get("/user", UserController.getData);
+routes.get("/sessions", SessionController.index);
 
 routes.put("/users", UserController.update);
 
