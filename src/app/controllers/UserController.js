@@ -114,21 +114,19 @@ class UserController {
   }
 
   async index(req, res) {
-    if (!req.userId) {
-      return res.status(401).json({
-        error: "Autenticação necessaria",
-      });
-    }
-
     let response;
 
-    if (req.teachersOnly) {
+    if (!req.query.type) {
+      response = await User.findAll({
+        where: { id: { [is.not]: req.userId } },
+      });
+    } else if (req.query.type === "teachers") {
       response = await User.findAll({
         where: { is_teacher: true, id: { [is.not]: req.userId } },
       });
-    } else {
+    } else if (req.query.type === "students") {
       response = await User.findAll({
-        where: { id: { [is.not]: req.userId } },
+        where: { is_teacher: false, id: { [is.not]: req.userId } },
       });
     }
 

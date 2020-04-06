@@ -137,10 +137,11 @@ Método `GET` <br>
 Rota `/users` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
-#### Listar apenas os professores
+#### Listar apenas os professores ou estudantes
 
 Método `GET` <br>
-Rota `/teachers` <br>
+Rota `/users` <br>
+Query params `type=teachers` ou `type=students` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Corpo da resposta:

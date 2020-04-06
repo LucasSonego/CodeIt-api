@@ -18,15 +18,6 @@ routes.use(authMiddleware);
 routes.get("/sessions", SessionController.index);
 
 routes.put("/users", UserController.update);
-
 routes.get("/users", UserController.index);
-routes.get(
-  "/teachers",
-  (req, res, next) => {
-    req.teachersOnly = true;
-    return next();
-  },
-  UserController.index
-);
 
 export default routes;
