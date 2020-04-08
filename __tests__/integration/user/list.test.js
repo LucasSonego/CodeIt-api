@@ -17,17 +17,13 @@ describe("Testes de listagem de usuarios", () => {
         is_teacher: i <= 2,
       });
 
-      await request(app)
-        .post("/users")
-        .send(userData);
+      await request(app).post("/users").send(userData);
     }
 
-    const response = await request(app)
-      .post("/sessions")
-      .send({
-        email: "testuser1@gmail.com",
-        password: "123456",
-      });
+    const response = await request(app).post("/sessions").send({
+      email: "testuser1@gmail.com",
+      password: "123456",
+    });
 
     token = response.body.token;
   });
@@ -42,10 +38,20 @@ describe("Testes de listagem de usuarios", () => {
 
   test("Listar apenas os professores", async () => {
     const response = await request(app)
-      .get("/teachers")
-      .set("Authorization", "Bearer " + token);
+      .get("/users")
+      .set("Authorization", "Bearer " + token)
+      .query({ type: "teachers" });
 
     expect(response.body.length).toBe(1);
+  });
+
+  test("Listar apenas os estudantes", async () => {
+    const response = await request(app)
+      .get("/users")
+      .set("Authorization", "Bearer " + token)
+      .query({ type: "students" });
+
+    expect(response.body.length).toBe(2);
   });
 
   test("Validação de autenticação", async () => {
