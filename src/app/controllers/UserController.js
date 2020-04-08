@@ -11,14 +11,8 @@ class UserController {
         .required()
         .test(value => value && !!value.match(/^[0-9]+$/)),
       name: yup.string().required(),
-      email: yup
-        .string()
-        .required()
-        .email(),
-      password: yup
-        .string()
-        .required()
-        .min(6),
+      email: yup.string().required().email(),
+      password: yup.string().required().min(6),
       is_teacher: yup.boolean(),
     });
 
@@ -119,35 +113,20 @@ class UserController {
     });
   }
 
-  async getData(req, res) {
-    if (req.userId) {
-      const userData = await User.findOne({ where: { id: req.userId } });
-
-      return res.json({
-        id: userData.id,
-        name: userData.name,
-        email: userData.email,
-        is_teacher: userData.is_teacher,
-      });
-    }
-  }
-
   async index(req, res) {
-    if (!req.userId) {
-      return res.status(401).json({
-        error: "Autenticação necessaria",
-      });
-    }
-
     let response;
 
-    if (req.teachersOnly) {
+    if (!req.query.type) {
+      response = await User.findAll({
+        where: { id: { [is.not]: req.userId } },
+      });
+    } else if (req.query.type === "teachers") {
       response = await User.findAll({
         where: { is_teacher: true, id: { [is.not]: req.userId } },
       });
-    } else {
+    } else if (req.query.type === "students") {
       response = await User.findAll({
-        where: { id: { [is.not]: req.userId } },
+        where: { is_teacher: false, id: { [is.not]: req.userId } },
       });
     }
 
