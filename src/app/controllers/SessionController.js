@@ -7,10 +7,7 @@ import authConfig from "../../config/auth";
 class SessionController {
   async store(req, res) {
     const schema = yup.object().shape({
-      email: yup
-        .string()
-        .email()
-        .required(),
+      email: yup.string().email().required(),
       password: yup.string().required(),
     });
 
@@ -39,6 +36,16 @@ class SessionController {
       token: jwt.sign({ id }, authConfig.secret, {
         expiresIn: authConfig.expiresIn,
       }),
+    });
+  }
+
+  async index(req, res) {
+    const userData = await User.findByPk(req.userId);
+    return res.json({
+      id: userData.id,
+      name: userData.name,
+      email: userData.email,
+      is_teacher: userData.is_teacher,
     });
   }
 }
