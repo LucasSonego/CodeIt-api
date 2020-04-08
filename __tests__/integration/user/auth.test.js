@@ -11,23 +11,19 @@ describe("Testes de validação de autenticação", () => {
     await truncate();
 
     const userData = await factory.attrs("User");
-    await request(app)
-      .post("/users")
-      .send(userData);
+    await request(app).post("/users").send(userData);
 
     user = userData;
-    const response = await request(app)
-      .post("/sessions")
-      .send({
-        email: userData.email,
-        password: userData.password,
-      });
+    const response = await request(app).post("/sessions").send({
+      email: userData.email,
+      password: userData.password,
+    });
     token = response.body.token;
   });
 
   test("Validação de autenticação (token correto)", async () => {
     const response = await request(app)
-      .get("/user")
+      .get("/sessions")
       .set("Authorization", "Bearer " + token);
 
     expect(response.body).not.toHaveProperty("error");
@@ -39,14 +35,14 @@ describe("Testes de validação de autenticação", () => {
 
   test("Validação de autenticação (token invalido)", async () => {
     const response = await request(app)
-      .get("/user")
+      .get("/sessions")
       .set("Authorization", "Bearer " + "~invalid token~");
 
     expect(response.body.error).toBe("Token invalido");
   });
 
   test("Validação de autenticação (sem token)", async () => {
-    const response = await request(app).get("/user");
+    const response = await request(app).get("/sessions");
 
     expect(response.body.error).toBe("Autenticação necessaria");
   });
