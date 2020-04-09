@@ -3,3 +3,5 @@ import "./user/login.test";
 import "./user/auth.test";
 import "./user/update.test";
 import "./user/list.test";
+
+import "./disciplines/create.test";
