@@ -2,6 +2,7 @@ import * as yup from "yup";
 import { Op as is } from "sequelize";
 
 import User from "../models/User";
+import Discipline from "../models/Discipline";
 
 class UserController {
   async store(req, res) {
@@ -56,12 +57,6 @@ class UserController {
   }
 
   async update(req, res) {
-    if (!req.userId) {
-      return res.status(401).json({
-        error: "Autenticação necessaria",
-      });
-    }
-
     const user = await User.findByPk(req.userId);
 
     const schema = yup.object().shape({
@@ -119,24 +114,28 @@ class UserController {
     if (!req.query.type) {
       response = await User.findAll({
         where: { id: { [is.not]: req.userId } },
+        attributes: ["id", "name", "email", "is_teacher"],
       });
     } else if (req.query.type === "teachers") {
       response = await User.findAll({
         where: { is_teacher: true, id: { [is.not]: req.userId } },
+        attributes: ["id", "name", "email", "is_teacher"],
+        include: [
+          {
+            model: Discipline,
+            as: "disciplines",
+            attributes: ["id", "name"],
+          },
+        ],
       });
     } else if (req.query.type === "students") {
       response = await User.findAll({
         where: { is_teacher: false, id: { [is.not]: req.userId } },
+        attributes: ["id", "name", "email", "is_teacher"],
       });
     }
 
-    const users = response.map(user => {
-      const { id, name, email, is_teacher } = user.dataValues;
-
-      return { id, name, email, is_teacher };
-    });
-
-    return res.json(users);
+    return res.json(response);
   }
 }
 
