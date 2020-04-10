@@ -43,6 +43,7 @@ describe("Testes de listagem de usuarios", () => {
       .query({ type: "teachers" });
 
     expect(response.body.length).toBe(1);
+    expect(!!response.body[0].disciplines).toBe(true);
   });
 
   test("Listar apenas os estudantes", async () => {
