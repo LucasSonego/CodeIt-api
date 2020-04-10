@@ -56,6 +56,36 @@ class DisciplineController {
       });
     }
   }
+
+  async index(req, res) {
+    let disciplines;
+    if (req.query.teacher) {
+      disciplines = await Discipline.findAll({
+        where: { teacher_id: req.query.teacher },
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["id", "name", "email"],
+          },
+        ],
+      });
+    } else {
+      disciplines = await Discipline.findAll({
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["id", "name", "email"],
+          },
+        ],
+      });
+    }
+
+    return res.json(disciplines);
+  }
 }
 
 export default new DisciplineController();
