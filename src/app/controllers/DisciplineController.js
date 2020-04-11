@@ -86,6 +86,47 @@ class DisciplineController {
 
     return res.json(disciplines);
   }
+
+  async update(req, res) {
+    let [user, discipline] = await Promise.all([
+      User.findByPk(req.userId),
+      Discipline.findByPk(req.body.id),
+    ]);
+
+    if (!(user.id === discipline.teacher_id)) {
+      return res.status(403).json({
+        error: "Você não tem permissão para fazer alterações nesta disciplina",
+      });
+    }
+
+    if (req.body.newTeacher) {
+      let newTeacher = await User.findByPk(req.body.newTeacher);
+      if (!newTeacher.is_teacher) {
+        return res.status(400).json({
+          error: "O usuário inserido não existe ou não é um professor",
+        });
+      } else {
+        await discipline.update({
+          teacher_id: req.body.newTeacher,
+          ...req.body,
+        });
+      }
+    } else {
+      await discipline.update(req.body.name);
+    }
+
+    const response = await Discipline.findByPk(req.body.id, {
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: User,
+          as: "teacher",
+          attributes: ["id", "name", "email"],
+        },
+      ],
+    });
+    return res.json(response);
+  }
 }
 
 export default new DisciplineController();
