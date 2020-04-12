@@ -85,6 +85,19 @@ describe("Testes de busca e listagem de disciplinas", () => {
     expect(response.body.name).toBe("New name");
   });
 
+  test("Validação dos campos da requisição", async () => {
+    const response = await request(app)
+      .put("/disciplines")
+      .set("Authorization", "Bearer " + teacher1.token)
+      .send({
+        id: discipline.id,
+        // name: "New name",
+      });
+
+    expect(response.body).toHaveProperty("error");
+    expect(response.body.error).toBe("Envie os dados que você deseja alterar");
+  });
+
   test("Validação do professor para alterar dados da disciplina", async () => {
     const response = await request(app)
       .put("/disciplines")

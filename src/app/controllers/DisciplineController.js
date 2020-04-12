@@ -88,6 +88,24 @@ class DisciplineController {
   }
 
   async update(req, res) {
+    const schema = yup.object().shape({
+      id: yup.string().required(),
+      name: yup.string(),
+      newTeacher: yup.string(),
+    });
+
+    if (!schema.isValid(req.body)) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    if (!(Object.entries(req.body).length > 1)) {
+      return res.status(400).json({
+        error: "Envie os dados que você deseja alterar",
+      });
+    }
+
     let [user, discipline] = await Promise.all([
       User.findByPk(req.userId),
       Discipline.findByPk(req.body.id),
@@ -112,7 +130,9 @@ class DisciplineController {
         });
       }
     } else {
-      await discipline.update(req.body.name);
+      if (req.body.name) {
+        await discipline.update({ name: req.body.name });
+      }
     }
 
     const response = await Discipline.findByPk(req.body.id, {
