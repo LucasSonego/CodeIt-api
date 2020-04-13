@@ -146,6 +146,30 @@ class DisciplineController {
     });
     return res.json(response);
   }
+
+  async delete(req, res) {
+    const [user, discipline] = await Promise.all([
+      User.findByPk(req.userId),
+      Discipline.findByPk(req.params.id),
+    ]);
+
+    if (!discipline) {
+      return res.status(404).json({
+        error: "Não há nenhuma disciplina cadastrada com este código",
+      });
+    }
+
+    if (user.id !== discipline.teacher_id) {
+      return res.status(403).json({
+        error: "Você não tem permissão para fazer alterações nesta disciplina",
+      });
+    }
+
+    await discipline.destroy();
+    return res.status(200).json({
+      message: "Disciplina removida com sucesso",
+    });
+  }
 }
 
 export default new DisciplineController();

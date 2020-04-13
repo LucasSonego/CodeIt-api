@@ -24,5 +24,6 @@ routes.get("/users", UserController.index);
 routes.post("/disciplines", DisciplineController.store);
 routes.get("/disciplines", DisciplineController.index);
 routes.put("/disciplines/:id", DisciplineController.update);
+routes.delete("/disciplines/:id", DisciplineController.delete);
 
 export default routes;
