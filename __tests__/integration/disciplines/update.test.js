@@ -4,7 +4,7 @@ import app from "../../../src/app";
 import factory from "../../factories";
 import truncate from "../../util/truncate";
 
-describe("Testes de busca e listagem de disciplinas", () => {
+describe("Testes de alteração de dados de disciplina", () => {
   let teacher1, teacher2, student;
   let discipline = {
     id: "2020DEE123",
@@ -74,10 +74,9 @@ describe("Testes de busca e listagem de disciplinas", () => {
 
   test("Alterar o nome de uma disciplina", async () => {
     const response = await request(app)
-      .put("/disciplines")
+      .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({
-        id: discipline.id,
         name: "New name",
       });
 
@@ -87,10 +86,9 @@ describe("Testes de busca e listagem de disciplinas", () => {
 
   test("Validação dos campos da requisição", async () => {
     const response = await request(app)
-      .put("/disciplines")
+      .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({
-        id: discipline.id,
         // name: "New name",
       });
 
@@ -98,12 +96,11 @@ describe("Testes de busca e listagem de disciplinas", () => {
     expect(response.body.error).toBe("Envie os dados que você deseja alterar");
   });
 
-  test("Validação do professor para alterar dados da disciplina", async () => {
+  test("Validação do permissão para alterar dados da disciplina", async () => {
     const response = await request(app)
-      .put("/disciplines")
+      .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher2.token)
       .send({
-        id: discipline.id,
         name: "New name",
       });
 
@@ -116,10 +113,9 @@ describe("Testes de busca e listagem de disciplinas", () => {
 
   test("Transferir disciplina para outro professor", async () => {
     const response = await request(app)
-      .put("/disciplines")
+      .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({
-        id: discipline.id,
         newTeacher: teacher2.id,
       });
 
@@ -128,10 +124,9 @@ describe("Testes de busca e listagem de disciplinas", () => {
 
   test("Validação de tipo de usuario ao transferir disciplina para outro professor", async () => {
     const response = await request(app)
-      .put("/disciplines")
+      .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher2.token)
       .send({
-        id: discipline.id,
         newTeacher: student.id,
       });
 

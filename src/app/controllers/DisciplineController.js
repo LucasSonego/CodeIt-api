@@ -89,7 +89,6 @@ class DisciplineController {
 
   async update(req, res) {
     const schema = yup.object().shape({
-      id: yup.string().required(),
       name: yup.string(),
       newTeacher: yup.string(),
     });
@@ -100,7 +99,7 @@ class DisciplineController {
       });
     }
 
-    if (!(Object.entries(req.body).length > 1)) {
+    if (!(Object.entries(req.body).length > 0)) {
       return res.status(400).json({
         error: "Envie os dados que você deseja alterar",
       });
@@ -108,7 +107,7 @@ class DisciplineController {
 
     let [user, discipline] = await Promise.all([
       User.findByPk(req.userId),
-      Discipline.findByPk(req.body.id),
+      Discipline.findByPk(req.params.id),
     ]);
 
     if (!(user.id === discipline.teacher_id)) {
@@ -135,7 +134,7 @@ class DisciplineController {
       }
     }
 
-    const response = await Discipline.findByPk(req.body.id, {
+    const response = await Discipline.findByPk(req.params.id, {
       attributes: ["id", "name"],
       include: [
         {
