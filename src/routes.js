@@ -23,6 +23,6 @@ routes.get("/users", UserController.index);
 
 routes.post("/disciplines", DisciplineController.store);
 routes.get("/disciplines", DisciplineController.index);
-routes.put("/disciplines", DisciplineController.update);
+routes.put("/disciplines/:id", DisciplineController.update);
 
 export default routes;
