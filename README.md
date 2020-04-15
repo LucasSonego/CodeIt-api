@@ -35,9 +35,10 @@ Rota: `/users`
   "name": "Lucas Sônego",
   "email": "lucassonego@ufpr.br",
   "password": "123456",
+  "is_teacher": false
 }
 ```
-> Para o cadastro de um professor basta adicionar o campo `is_teacher: true` no corpo da requisição.
+> Para o cadastro de um professor basta enviar o campo `is_teacher: true` no corpo da requisição.
 
 #### Corpo da resposta:
 ```json
@@ -225,10 +226,10 @@ Rota `/users` <br>Query params `type=teachers` ou `type=students` <br>O cabeçal
 
 ### Criar disciplina
 
-| Campo | Tipo de Dado | Requisitos | Obrigatório |
-| ----- | ------------ | :--------- | ----------- |
-| id    | String       | único      | sim         |
-| name  | String       | -          | sim         |
+| Campo | Tipo de Dado | Requisitos          | Obrigatório |
+| ----- | ------------ | ------------------- | ----------- |
+| id    | String       | identificação única | sim         |
+| name  | String       | -                   | sim         |
 
 #### Corpo da requisição
 
@@ -261,10 +262,10 @@ O cabeçalho deve conter o token de autenticação de um usuário que seja profe
 
 ### Editar disciplina
 
-| Campo      | Tipo de dado | Requisitos                                 | Obrigatório |
-| ---------- | ------------ | ------------------------------------------ | ----------- |
-| name       | String       | -                                          | não         |
-| newTeacher | String       | id válido de um usuário que seja professor | não         |
+| Campo      | Tipo de dado | Requisitos                                    | Obrigatório |
+| ---------- | ------------ | --------------------------------------------- | ----------- |
+| name       | String       | -                                             | não         |
+| newTeacher | String       | id válido, e de um usuário que seja professor | não         |
 
 #### Corpo da requisição
 
@@ -303,7 +304,7 @@ Método `GET` <br>Rota `/disciplines` <br>O cabeçalho da requisição deve cont
 
 #### Buscar disciplinas de um único professor
 
-Método `GET` <br>Rota `/disciplines` <br>Query params `teacher=id_do_professor`
+Método `GET` <br>Rota `/disciplines` <br>Query params `teacher=231412` **id do professor*
 
 O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
 
@@ -350,4 +351,4 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 }
 ```
 
-> OBS: Deletar uma disciplina não apaga-a do banco de dados (*soft delete*), esta disciplina apenas não será mais listada
+> OBS: Deletar uma disciplina não irá apaga-la do banco de dados (*soft delete*), a disciplina apenas não será mais listada
