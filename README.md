@@ -6,7 +6,11 @@
     - [Validação de autenticação](#Validação-de-autenticação)
     - [Editar Dados](#Editar-dados)
     - [Listar](#Listar)
-    
+- [Disciplinas](#Disciplinas)
+    - [Criar](#Criar-disciplina)
+    - [Editar](#Editar-disciplina)
+    - [Listar](#Listar-disciplinas)
+    - [Deletar](#Deletar-disciplina)
 ## Usuários
 
 ### Cadastro de usuário
@@ -22,9 +26,9 @@
 
 #### Corpo da requisição:
 
-
-Metodo: `POST` <br>
+Método: `POST` <br>
 Rota: `/users`
+
 ```json
 {
   "id": "20184906",
@@ -45,7 +49,10 @@ Rota: `/users`
 }
 ```
 
+
+
 ### Login
+
 #### Dados
 | Campo      | Tipo de dado  | Requisitos            | Obrigatório            |
 | :--------- |:--------------| :-------------------- | :--------------------- |
@@ -74,22 +81,27 @@ Rota: `/sessions`
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM..."
 }
 ```
+
+
 ### Validação de autenticação
+
 #### Corpo da requisição:
 Método: `GET` <br>
 Rota: `/sessions` <br>
-O cabeçalho da requisição deve conter o token de autenticação.
+O cabeçalho da requisição deve conter o *token* de autenticação.
 
 
 #### Corpo da resposta:
 ```json
 {
-   "id": 1,
+   "id": "20184906",
    "name": "Lucas Sônego",
    "email": "lucassonego@ufpr.br",
    "is_teacher": false
 }
 ```
+
+
 
 ### Editar dados
 
@@ -129,6 +141,7 @@ O cabeçalho da requisição deve conter o token de autenticação.
 ```
 
 
+
 ### Listar
 
 #### Listar todos os usuários
@@ -140,11 +153,12 @@ O cabeçalho da requisição deve conter o token de autenticação.
 #### Listar apenas os professores ou estudantes
 
 Método `GET` <br>
-Rota `/users` <br>
-Query params `type=teachers` ou `type=students` <br>
-O cabeçalho da requisição deve conter o token de autenticação.
+Rota `/users` <br>Query params `type=teachers` ou `type=students` <br>O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Corpo da resposta:
+
+#####  Com `type=students` ou sem *query params*:
+
 ```json
 [
   {
@@ -167,3 +181,173 @@ O cabeçalho da requisição deve conter o token de autenticação.
   }
 ]
 ```
+
+
+
+##### Com `type=teachers`
+
+```json
+[
+  {
+    "id": "1",
+    "name": "Professor 1",
+    "email": "professor1@ufpr.br",
+    "is_teacher": true,
+    "disciplines": [
+      {
+        "id": "2020D1",
+        "name": "Disciplina 1"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "name": "Professor 2",
+    "email": "professor2@ufpr.br",
+    "is_teacher": true,
+    "disciplines": [
+      {
+        "id": "2020D2",
+        "name": "Disciplina 2"
+      },
+      {
+        "id": "2020D3",
+        "name": "Disciplina 3"
+      }
+    ]
+  }
+]
+```
+
+
+
+## Disciplinas
+
+### Criar disciplina
+
+| Campo | Tipo de Dado | Requisitos | Obrigatório |
+| ----- | ------------ | :--------- | ----------- |
+| id    | String       | único      | sim         |
+| name  | String       | -          | sim         |
+
+#### Corpo da requisição
+
+Método `POST` <br>Rota `/disciplines` 
+
+O cabeçalho deve conter o token de autenticação de um usuário que seja professor
+
+```json
+{
+    "id": "2020D1",
+    "name": "Disciplina 1"
+}
+```
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1",
+  "name": "Disciplina 1",
+  "teacher": {
+    "id": "1",
+    "name": "Professor 1",
+    "email": "professor1@ufpr.br"
+  }
+}
+```
+
+
+
+### Editar disciplina
+
+| Campo      | Tipo de dado | Requisitos                                 | Obrigatório |
+| ---------- | ------------ | ------------------------------------------ | ----------- |
+| name       | String       | -                                          | não         |
+| newTeacher | String       | id válido de um usuário que seja professor | não         |
+
+#### Corpo da requisição
+
+Método `PUT` <br>Rota `/disciplines/2020D1` **id da disciplina que deseja editar*<br>
+
+O cabeçalho da requisição deve conter o token de autenticação do professor desta disciplina
+
+```json
+{
+    "name": "Novo nome",
+    "newTeacher": "2"
+}
+```
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1",
+  "name": "Novo nome",
+  "teacher": {
+    "id": "2",
+    "name": "Professor 2",
+    "email": "professor2@ufpr.br"
+  }
+}
+```
+
+
+
+### Listar disciplinas
+
+#### Listar todas as disciplinas
+
+Método `GET` <br>Rota `/disciplines` <br>O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
+
+#### Buscar disciplinas de um único professor
+
+Método `GET` <br>Rota `/disciplines` <br>Query params `teacher=id_do_professor`
+
+O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
+
+#### Corpo da resposta
+
+```json
+[
+  {
+    "id": "2020D1",
+    "name": "Disciplina 1",
+    "teacher": {
+      "id": "1",
+      "name": "Professor 1",
+      "email": "professor1@ufpr.br"
+    }
+  },
+  {
+    "id": "2020D2",
+    "name": "Disciplina 2",
+    "teacher": {
+      "id": "2",
+      "name": "Professor 2",
+      "email": "professor2@ufpr.br"
+    }
+  }
+]
+```
+
+
+
+### Deletar disciplina
+
+#### Requisição
+
+Método `DELETE` <br>Rota `/disciplines/2020D1` **id da disciplina que deseja deletar*
+
+O cabeçalho da requisição deve conter o token de autenticação do professor desta disciplina
+
+#### Resposta
+
+```json
+{
+  "message": "Disciplina removida com sucesso"
+}
+```
+
+> OBS: Deletar uma disciplina não apaga-a do banco de dados (*soft delete*), esta disciplina apenas não será mais listada
