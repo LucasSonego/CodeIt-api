@@ -25,6 +25,13 @@ class User extends Model {
     return this;
   }
 
+  static associate(models) {
+    this.hasMany(models.Discipline, {
+      foreignKey: "teacher_id",
+      as: "disciplines",
+    });
+  }
+
   checkPassword(password) {
     return bcrypt.compare(password, this.password_hash);
   }
