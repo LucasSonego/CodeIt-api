@@ -3,8 +3,9 @@ import request from "supertest";
 import app from "../../../src/app";
 import factory from "../../factories";
 import truncate from "../../util/truncate";
+import { response } from "express";
 
-describe("Testes de matriculas/incrições", () => {
+describe("Testes de listagem de estudantes matriculados em uma disciplina", () => {
   let teacher, student;
   let discipline = {
     id: "2020DEE123",
@@ -53,36 +54,30 @@ describe("Testes de matriculas/incrições", () => {
       .send({
         ...discipline,
       });
-  });
 
-  test("Efetuar matrícula", async () => {
-    const response = await request(app)
+    await request(app)
       .post(`/enrollments/${discipline.id}`)
       .set("Authorization", "Bearer " + student.token);
-
-    expect(response.body).not.toHaveProperty("error");
-    expect(response.body.discipline_id).toBe(discipline.id);
-    expect(response.body.student_id).toBe(student.id);
   });
 
-  test("Tentar se matricular em uma disciplina a qual ja está matriculado", async () => {
+  test("Listar estudantes matriculados em uma disciplina", async () => {
     const response = await request(app)
-      .post(`/enrollments/${discipline.id}`)
-      .set("Authorization", "Bearer " + student.token);
+      .get("/disciplines")
+      .set("Authorization", "Bearer " + teacher.token)
+      .query({ id: discipline.id });
 
-    expect(response.status).toBe(409);
-    expect(response.body).toHaveProperty("error");
-    expect(response.body.error).toBe(
-      "Você já está matriculado nesta disciplina"
-    );
+    expect(response.body).toHaveProperty("enrollments");
+    expect(response.body.enrollments[0].student.id).toBe(student.id);
+    expect(response.body.enrollments[0].student.name).toBe(student.name);
+    expect(response.body.enrollments[0].student.email).toBe(student.email);
   });
 
-  test("Tentar se matricular em uma disciplina que não existe", async () => {
+  test("Validação de existencia da disciplina buscada", async () => {
     const response = await request(app)
-      .post(`/enrollments/0000000`)
-      .set("Authorization", "Bearer " + student.token);
+      .get("/disciplines")
+      .set("Authorization", "Bearer " + teacher.token)
+      .query({ id: "~invalid id~" });
 
-    expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("error");
     expect(response.body.error).toBe(
       "Não há nenhuma disciplina cadastrada com este código"

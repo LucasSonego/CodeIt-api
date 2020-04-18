@@ -15,7 +15,7 @@ class EnrollmentController {
 
     if (!discipline) {
       return res.status(404).json({
-        error: "Não há nenhuma disciplina com este id",
+        error: "Não há nenhuma disciplina cadastrada com este código",
       });
     }
 
