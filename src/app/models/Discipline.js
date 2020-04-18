@@ -21,7 +21,7 @@ class Discipline extends Model {
 
     this.hasMany(models.Enrollment, {
       foreignKey: "discipline_id",
-      as: "enrolled_students",
+      as: "enrollments",
     });
   }
 }

@@ -2,6 +2,7 @@ import * as yup from "yup";
 
 import Discipline from "../models/Discipline";
 import User from "../models/User";
+import Enrollment from "../models/Enrollment";
 
 class DisciplineController {
   async store(req, res) {
@@ -71,6 +72,37 @@ class DisciplineController {
           },
         ],
       });
+    } else if (req.query.id) {
+      const response = await Discipline.findByPk(req.query.id, {
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["id", "name", "email"],
+          },
+          {
+            model: Enrollment,
+            as: "enrollments",
+            attributes: ["created_at"],
+            include: [
+              {
+                model: User,
+                as: "student",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!response) {
+        return res.status(404).json({
+          error: "Não há nenhuma disciplina cadastrada com este código",
+        });
+      }
+
+      return res.json(response);
     } else {
       disciplines = await Discipline.findAll({
         attributes: ["id", "name"],

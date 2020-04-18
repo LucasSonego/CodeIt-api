@@ -84,6 +84,8 @@ describe("Testes de matriculas/incrições", () => {
 
     expect(response.status).toBe(404);
     expect(response.body).toHaveProperty("error");
-    expect(response.body.error).toBe("Não há nenhuma disciplina com este id");
+    expect(response.body.error).toBe(
+      "Não há nenhuma disciplina cadastrada com este código"
+    );
   });
 });
