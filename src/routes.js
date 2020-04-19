@@ -28,5 +28,6 @@ routes.put("/disciplines/:id", DisciplineController.update);
 routes.delete("/disciplines/:id", DisciplineController.delete);
 
 routes.post("/enrollments/:discipline", EnrollmentController.store);
+routes.delete("/enrollments/:discipline", EnrollmentController.delete);
 
 export default routes;

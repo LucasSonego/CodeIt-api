@@ -32,6 +32,23 @@ class EnrollmentController {
 
     return res.json(enrollment);
   }
+
+  async delete(req, res) {
+    const enrollment = await Enrollment.findOne({
+      where: { student_id: req.userId, discipline_id: req.params.discipline },
+    });
+
+    if (!enrollment) {
+      return res.status(404).json({
+        error: "Você não está matriculado em uma disciplina com este código",
+      });
+    }
+
+    enrollment.destroy();
+    return res.json({
+      message: "Matrícula removida",
+    });
+  }
 }
 
 export default new EnrollmentController();

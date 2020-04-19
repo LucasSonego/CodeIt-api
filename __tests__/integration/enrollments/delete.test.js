@@ -59,27 +59,23 @@ describe("Testes de listagem de estudantes matriculados em uma disciplina", () =
       .set("Authorization", "Bearer " + student.token);
   });
 
-  test("Listar estudantes matriculados em uma disciplina", async () => {
+  test("Remover matricula", async () => {
     const response = await request(app)
-      .get("/disciplines")
-      .set("Authorization", "Bearer " + teacher.token)
-      .query({ id: discipline.id });
+      .delete(`/enrollments/${discipline.id}`)
+      .set("Authorization", "Bearer " + student.token);
 
-    expect(response.body).toHaveProperty("enrollments");
-    expect(response.body.enrollments[0].student.id).toBe(student.id);
-    expect(response.body.enrollments[0].student.name).toBe(student.name);
-    expect(response.body.enrollments[0].student.email).toBe(student.email);
+    expect(response.status).toBe(200);
+    expect(response.body.message).toBe("Matrícula removida");
   });
 
-  test("Validação de existencia da disciplina buscada", async () => {
+  test("Validação de existencia da matricula a ser removida", async () => {
     const response = await request(app)
-      .get("/disciplines")
-      .set("Authorization", "Bearer " + teacher.token)
-      .query({ id: "~invalid id~" });
+      .delete("/enrollments/~invalid discipline~")
+      .set("Authorization", "Bearer " + teacher.token);
 
     expect(response.body).toHaveProperty("error");
     expect(response.body.error).toBe(
-      "Não há nenhuma disciplina cadastrada com este código"
+      "Você não está matriculado em uma disciplina com este código"
     );
   });
 });
