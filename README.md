@@ -11,6 +11,9 @@
     - [Editar](#Editar-disciplina)
     - [Listar](#Listar-disciplinas)
     - [Deletar](#Deletar-disciplina)
+- [Matrículas](#Matrículas)
+    - [Efetuar matrícula](#Efetuar-matrícula)
+    - [Remover matrícula](#Remover matrícula)
 ## Usuários
 
 ### Cadastro de usuário
@@ -304,7 +307,7 @@ Método `GET` <br>Rota `/disciplines` <br>O cabeçalho da requisição deve cont
 
 #### Buscar disciplinas de um único professor
 
-Método `GET` <br>Rota `/disciplines` <br>Query params `teacher=231412` **id do professor*
+Método `GET` <br>Rota `/disciplines` <br>Query params (opcionais):<br>`teacher=231412` **id do professor*: Lista apenas as disciplinas do professor buscado.<br>`id=2020D1` \**id da disciplina*: Retorna dados da disciplina buscada, e lista todos os estudantes matriculados nesta disciplina
 
 O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
 
@@ -333,6 +336,38 @@ O cabeçalho da requisição deve conter um token válido, que pode ser tanto de
 ]
 ```
 
+Com *query param* `id`:
+
+```json
+{
+  "id": "2020D1",
+  "name": "Disciplina 1",
+  "teacher": {
+    "id": "654321",
+    "name": "Teacher 1",
+    "email": "teacher1@ufpr.br"
+  },
+  "enrollments": [
+    {
+      "created_at": "2020-04-20T15:31:33.477Z",
+      "student": {
+        "id": "1234",
+        "name": "Estudante 1",
+        "email": "estudante1@ufpr.br"
+      }
+    },
+    {
+      "created_at": "2020-04-20T15:32:21.477Z",
+      "student": {
+        "id": "4321",
+        "name": "Estudante 2",
+        "email": "estudante2@ufpr.br"
+      }
+    }
+  ]
+}
+```
+
 
 
 ### Deletar disciplina
@@ -351,4 +386,45 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 }
 ```
 
-> OBS: Deletar uma disciplina não irá apaga-la do banco de dados (*soft delete*), a disciplina apenas não será mais listada
+> OBS: Deletar uma disciplina não irá apaga-la do banco de dados (*soft delete*), a disciplina apenas não será mais listada.
+
+
+
+## Matrículas
+
+### Efetuar matrícula
+
+#### Requisição
+
+Método `GET`<br>Rota `/enrollments/2020D1` **id da disciplina*
+
+O cabeçalho da requisição deve conter o token de autenticação do estudante
+
+#### Corpo da resposta
+
+```json
+{
+  "discipline_id": "2020D1",
+  "student_id": "20184906",
+  "createdAt": "2020-04-20T15:31:33.477Z"
+}
+```
+
+
+
+### Remover matrícula
+
+#### Requisição
+
+Método `DELETE`<br>Rota `/enrollments/2020D1` **id da disciplina*
+
+O cabeçalho da requisição deve conter o token de autenticação do estudante matriculado
+
+#### Corpo da resposta
+
+```json
+{
+  "message": "Matrícula removida"
+}
+```
+
