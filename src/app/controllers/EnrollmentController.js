@@ -30,7 +30,11 @@ class EnrollmentController {
       student_id: req.userId,
     });
 
-    return res.json(enrollment);
+    return res.json({
+      discipline_id: enrollment.discipline_id,
+      student_id: enrollment.student_id,
+      createdAt: enrollment.createdAt,
+    });
   }
 
   async delete(req, res) {
