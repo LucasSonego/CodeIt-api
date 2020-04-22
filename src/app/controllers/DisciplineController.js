@@ -2,6 +2,7 @@ import * as yup from "yup";
 
 import Discipline from "../models/Discipline";
 import User from "../models/User";
+import Enrollment from "../models/Enrollment";
 
 class DisciplineController {
   async store(req, res) {
@@ -58,9 +59,8 @@ class DisciplineController {
   }
 
   async index(req, res) {
-    let disciplines;
     if (req.query.teacher) {
-      disciplines = await Discipline.findAll({
+      const response = await Discipline.findAll({
         where: { teacher_id: req.query.teacher },
         attributes: ["id", "name"],
         include: [
@@ -71,8 +71,61 @@ class DisciplineController {
           },
         ],
       });
-    } else {
-      disciplines = await Discipline.findAll({
+
+      return res.json(response);
+    } else if (req.query.id) {
+      const response = await Discipline.findByPk(req.query.id, {
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: User,
+            as: "teacher",
+            attributes: ["id", "name", "email"],
+          },
+          {
+            model: Enrollment,
+            as: "enrollments",
+            attributes: ["created_at"],
+            include: [
+              {
+                model: User,
+                as: "student",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!response) {
+        return res.status(404).json({
+          error: "Não há nenhuma disciplina cadastrada com este código",
+        });
+      }
+
+      return res.json(response);
+    }
+
+    const [userDisciplines, allDisciplines] = await Promise.all([
+      Enrollment.findAll({
+        where: { student_id: req.userId },
+        include: [
+          {
+            model: Discipline,
+            as: "discipline",
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: User,
+                as: "teacher",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+        ],
+      }),
+
+      Discipline.findAll({
         attributes: ["id", "name"],
         include: [
           {
@@ -81,10 +134,28 @@ class DisciplineController {
             attributes: ["id", "name", "email"],
           },
         ],
-      });
-    }
+      }),
+    ]);
 
-    return res.json(disciplines);
+    const enrolledDisciplines = userDisciplines.map(
+      enrollment => enrollment.discipline
+    );
+
+    const otherDisciplines = allDisciplines.filter(discipline => {
+      const enrolled = enrolledDisciplines.find(
+        enrolledDiscipline => enrolledDiscipline.id === discipline.id
+      );
+      if (!enrolled) {
+        return discipline;
+      }
+    });
+
+    const response = {
+      enrolled_disciplines: [...enrolledDisciplines],
+      disciplines: [...otherDisciplines],
+    };
+
+    return res.json(response);
   }
 
   async update(req, res) {
