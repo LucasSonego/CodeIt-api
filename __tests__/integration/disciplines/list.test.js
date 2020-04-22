@@ -19,67 +19,82 @@ describe("Testes de busca e listagem de disciplinas", () => {
   beforeAll(async () => {
     await truncate();
 
-    let teacher1Data = await factory.attrs("User", {
-      is_teacher: true,
-    });
-    await request(app).post("/users").send(teacher1Data);
+    const [teacher1Data, teacher2Data, studentData] = await Promise.all([
+      factory.attrs("User", {
+        is_teacher: true,
+      }),
+      factory.attrs("User", {
+        is_teacher: true,
+      }),
+      factory.attrs("User", {
+        is_teacher: false,
+      }),
+    ]);
 
-    let response;
-    response = await request(app).post("/sessions").send({
-      email: teacher1Data.email,
-      password: teacher1Data.password,
-    });
+    await Promise.all([
+      request(app).post("/users").send(teacher1Data),
+      request(app).post("/users").send(teacher2Data),
+      request(app).post("/users").send(studentData),
+    ]);
+
+    const [
+      teacher1Response,
+      teacher2Response,
+      studentResponse,
+    ] = await Promise.all([
+      await request(app).post("/sessions").send({
+        email: teacher1Data.email,
+        password: teacher1Data.password,
+      }),
+      await request(app).post("/sessions").send({
+        email: teacher2Data.email,
+        password: teacher2Data.password,
+      }),
+      await request(app).post("/sessions").send({
+        email: studentData.email,
+        password: studentData.password,
+      }),
+    ]);
+
     teacher1 = {
       ...teacher1Data,
-      token: response.body.token,
+      token: teacher1Response.body.token,
     };
-
-    await request(app)
-      .post("/disciplines")
-      .set("Authorization", "Bearer " + teacher1.token)
-      .send(discipline1);
-
-    let teacher2Data = await factory.attrs("User", {
-      is_teacher: true,
-    });
-    await request(app).post("/users").send(teacher2Data);
-
-    response = await request(app).post("/sessions").send({
-      email: teacher2Data.email,
-      password: teacher2Data.password,
-    });
     teacher2 = {
       ...teacher2Data,
-      token: response.body.token,
+      token: teacher2Response.body.token,
     };
+    student = {
+      ...studentResponse,
+      token: studentResponse.body.token,
+    };
+
+    await Promise.all([
+      request(app)
+        .post("/disciplines")
+        .set("Authorization", "Bearer " + teacher1.token)
+        .send(discipline1),
+      request(app)
+        .post("/disciplines")
+        .set("Authorization", "Bearer " + teacher2.token)
+        .send(discipline2),
+    ]);
 
     await request(app)
-      .post("/disciplines")
-      .set("Authorization", "Bearer " + teacher2.token)
-      .send(discipline2);
-
-    let studentData = await factory.attrs("User", {
-      is_teacher: false,
-    });
-    await request(app).post("/users").send(studentData);
-
-    response = await request(app).post("/sessions").send({
-      email: studentData.email,
-      password: studentData.password,
-    });
-    student = {
-      ...studentData,
-      token: response.body.token,
-    };
+      .post(`/enrollments/${discipline1.id}`)
+      .set("Authorization", "Bearer " + student.token);
   });
 
-  test("Listar todas as disciplinas", async () => {
+  test("Listar todas as disciplinas que o usuario está matriculado e as outras disciplinas", async () => {
     const response = await request(app)
       .get("/disciplines")
       .set("Authorization", "Bearer " + student.token);
 
     expect(response.body).not.toHaveProperty("error");
-    expect(response.body.length).toBe(2);
+    expect(response.body).toHaveProperty("enrolled_disciplines");
+    expect(response.body.enrolled_disciplines.length).toBe(1);
+    expect(response.body).toHaveProperty("disciplines");
+    expect(response.body.disciplines.length).toBe(1);
   });
 
   test("Buscar disciplinas de um professor especifico", async () => {

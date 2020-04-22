@@ -8,3 +8,7 @@ import "./disciplines/create.test";
 import "./disciplines/list.test";
 import "./disciplines/update.test";
 import "./disciplines/delete.test";
+
+import "./enrollments/create.test";
+import "./enrollments/list.test";
+import "./enrollments/delete.test";

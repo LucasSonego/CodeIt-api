@@ -30,6 +30,11 @@ class User extends Model {
       foreignKey: "teacher_id",
       as: "disciplines",
     });
+
+    this.hasMany(models.Enrollment, {
+      foreignKey: "student_id",
+      as: "enrollments",
+    });
   }
 
   checkPassword(password) {
