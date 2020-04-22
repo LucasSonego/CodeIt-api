@@ -59,9 +59,8 @@ class DisciplineController {
   }
 
   async index(req, res) {
-    let disciplines;
     if (req.query.teacher) {
-      disciplines = await Discipline.findAll({
+      const response = await Discipline.findAll({
         where: { teacher_id: req.query.teacher },
         attributes: ["id", "name"],
         include: [
@@ -72,6 +71,8 @@ class DisciplineController {
           },
         ],
       });
+
+      return res.json(response);
     } else if (req.query.id) {
       const response = await Discipline.findByPk(req.query.id, {
         attributes: ["id", "name"],
@@ -103,8 +104,28 @@ class DisciplineController {
       }
 
       return res.json(response);
-    } else {
-      disciplines = await Discipline.findAll({
+    }
+
+    const [userDisciplines, allDisciplines] = await Promise.all([
+      Enrollment.findAll({
+        where: { student_id: req.userId },
+        include: [
+          {
+            model: Discipline,
+            as: "discipline",
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: User,
+                as: "teacher",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+        ],
+      }),
+
+      Discipline.findAll({
         attributes: ["id", "name"],
         include: [
           {
@@ -113,10 +134,28 @@ class DisciplineController {
             attributes: ["id", "name", "email"],
           },
         ],
-      });
-    }
+      }),
+    ]);
 
-    return res.json(disciplines);
+    const enrolledDisciplines = userDisciplines.map(
+      enrollment => enrollment.discipline
+    );
+
+    const otherDisciplines = allDisciplines.filter(discipline => {
+      const enrolled = enrolledDisciplines.find(
+        enrolledDiscipline => enrolledDiscipline.id === discipline.id
+      );
+      if (!enrolled) {
+        return discipline;
+      }
+    });
+
+    const response = {
+      enrolled_disciplines: [...enrolledDisciplines],
+      disciplines: [...otherDisciplines],
+    };
+
+    return res.json(response);
   }
 
   async update(req, res) {
