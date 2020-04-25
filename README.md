@@ -17,6 +17,8 @@
   - [Efetuar matrícula](#Efetuar-matrícula)
   - [Remover matrícula](#Remover-matrícula)
 
+
+
 ## Usuários
 
 ### Cadastro de usuário
@@ -59,6 +61,8 @@ Rota: `/users`
 }
 ```
 
+
+
 ### Login
 
 #### Dados
@@ -94,24 +98,46 @@ Rota: `/sessions`
 }
 ```
 
+
+
 ### Validação de autenticação
 
 #### Corpo da requisição:
 
 Método: `GET` <br>
-Rota: `/sessions` <br>
+Rota: `/sessions` <br>Query params (opcional): `newtoken: true`, retorna um novo token de autenticação
 O cabeçalho da requisição deve conter o _token_ de autenticação.
 
 #### Corpo da resposta:
 
+##### Sem _query string_:
+
 ```json
 {
-  "id": "20184906",
-  "name": "Lucas Sônego",
-  "email": "lucassonego@ufpr.br",
-  "is_teacher": false
+  "user": {
+    "id": "20184906",
+    "name": "Lucas Sônego",
+    "email": "lucassonego@ufpr.br",
+    "is_teacher": false
+  },
 }
 ```
+
+##### Com `newtoken=true`
+
+```json
+{
+  "user": {
+    "id": "20184906",
+    "name": "Lucas Sônego",
+    "email": "lucassonego@ufpr.br",
+    "is_teacher": false
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjEyMzQ1NiIsImlhdCI6MTU4Nzc1ODMwMywiZXhwIjoxNTg4MzYzMTAzfQ.UtWJ0_Xz2kKU9feCI9lf72U1sB9dfAv5M5ffUjOI5JI"
+}
+```
+
+
 
 ### Editar dados
 
@@ -152,6 +178,8 @@ O cabeçalho da requisição deve conter o token de autenticação.
   "is_teacher": true
 }
 ```
+
+
 
 ### Listar
 
@@ -228,6 +256,8 @@ Rota `/users` <br>Query params `type=teachers` ou `type=students` <br>O cabeçal
 ]
 ```
 
+
+
 ## Disciplinas
 
 ### Criar disciplina
@@ -264,6 +294,8 @@ O cabeçalho deve conter o token de autenticação de um usuário que seja profe
 }
 ```
 
+
+
 ### Editar disciplina
 
 | Campo      | Tipo de dado | Requisitos                                    | Obrigatório |
@@ -297,6 +329,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   }
 }
 ```
+
+
 
 ### Listar disciplinas
 
@@ -416,6 +450,8 @@ Com _query_ `id`:
 }
 ```
 
+
+
 ### Deletar disciplina
 
 #### Requisição
@@ -433,6 +469,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 ```
 
 > OBS: Deletar uma disciplina não irá apaga-la do banco de dados (_soft delete_), a disciplina apenas não será mais listada.
+
+
 
 ## Matrículas
 
@@ -453,6 +491,8 @@ O cabeçalho da requisição deve conter o token de autenticação do estudante
   "createdAt": "2020-04-20T15:31:33.477Z"
 }
 ```
+
+
 
 ### Remover matrícula
 
