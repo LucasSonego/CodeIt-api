@@ -40,13 +40,24 @@ class SessionController {
   }
 
   async index(req, res) {
-    const userData = await User.findByPk(req.userId);
-    return res.json({
-      id: userData.id,
-      name: userData.name,
-      email: userData.email,
-      is_teacher: userData.is_teacher,
-    });
+    const { id, name, email, is_teacher } = await User.findByPk(req.userId);
+    let response = {
+      user: {
+        id,
+        name,
+        email,
+        is_teacher,
+      },
+    };
+    if (req.query.newtoken) {
+      response = {
+        ...response,
+        token: jwt.sign({ id }, authConfig.secret, {
+          expiresIn: authConfig.expiresIn,
+        }),
+      };
+    }
+    return res.json(response);
   }
 }
 
