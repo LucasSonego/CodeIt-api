@@ -114,7 +114,7 @@ O cabeçalho da requisição deve conter o _token_ de autenticação.
 
 ```json
 {
-  user: {
+  "user": {
     "id": "20184906",
     "name": "Lucas Sônego",
     "email": "lucassonego@ufpr.br",
