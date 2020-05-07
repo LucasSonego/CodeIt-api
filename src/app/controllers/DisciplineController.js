@@ -3,6 +3,7 @@ import * as yup from "yup";
 import Discipline from "../models/Discipline";
 import User from "../models/User";
 import Enrollment from "../models/Enrollment";
+import Task from "../models/Task";
 
 class DisciplineController {
   async store(req, res) {
@@ -93,6 +94,11 @@ class DisciplineController {
                 attributes: ["id", "name", "email"],
               },
             ],
+          },
+          {
+            model: Task,
+            as: "tasks",
+            attributes: ["id", "title", "description", "code"],
           },
         ],
       });

@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
       },
 
-      discipline: {
+      discipline_id: {
         type: Sequelize.STRING,
         allowNull: false,
         references: { model: "disciplines", key: "id" },

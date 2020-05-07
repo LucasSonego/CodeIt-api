@@ -23,6 +23,11 @@ class Discipline extends Model {
       foreignKey: "discipline_id",
       as: "enrollments",
     });
+
+    this.hasMany(models.Task, {
+      foreignKey: "discipline_id",
+      as: "tasks",
+    });
   }
 }
 
