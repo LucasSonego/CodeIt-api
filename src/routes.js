@@ -5,6 +5,7 @@ import UserController from "./app/controllers/UserController";
 import SessionController from "./app/controllers/SessionController";
 import DisciplineController from "./app/controllers/DisciplineController";
 import EnrollmentController from "./app/controllers/EnrollmentController";
+import TaskController from "./app/controllers/TaskController";
 
 import authMiddleware from "./app/middlewares/authMiddleware";
 
@@ -29,5 +30,7 @@ routes.delete("/disciplines/:id", DisciplineController.delete);
 
 routes.post("/enrollments/:discipline", EnrollmentController.store);
 routes.delete("/enrollments/:discipline", EnrollmentController.delete);
+
+routes.post("/tasks", TaskController.store);
 
 export default routes;

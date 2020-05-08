@@ -12,3 +12,5 @@ import "./disciplines/delete.test";
 import "./enrollments/create.test";
 import "./enrollments/list.test";
 import "./enrollments/delete.test";
+
+import "./tasks/create.test";
