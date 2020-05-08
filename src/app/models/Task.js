@@ -11,6 +11,7 @@ class Task extends Model {
       {
         sequelize,
         paranoid: true,
+        deletedAt: "closed_at",
       }
     );
   }
