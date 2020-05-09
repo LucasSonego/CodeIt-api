@@ -32,5 +32,6 @@ routes.post("/enrollments/:discipline", EnrollmentController.store);
 routes.delete("/enrollments/:discipline", EnrollmentController.delete);
 
 routes.post("/tasks", TaskController.store);
+routes.put("/tasks/:id", TaskController.update);
 
 export default routes;
