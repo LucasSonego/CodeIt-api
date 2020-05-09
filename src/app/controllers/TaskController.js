@@ -66,6 +66,72 @@ class TaskController {
       code,
     });
   }
+
+  async update(req, res) {
+    const schema = yup.object().shape({
+      title: yup.string(),
+      description: yup.string(),
+      code: yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    if (!req.body.title && !req.body.description && !req.body.code) {
+      return res.status(400).json({
+        error: "Não há nada a ser alterado",
+      });
+    }
+
+    const task = await Task.findByPk(req.params.id, {
+      include: [
+        {
+          model: Discipline,
+          as: "discipline",
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: User,
+              as: "teacher",
+              attributes: ["id", "name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        error: "Não há nenhuma tarefa com este id",
+      });
+    }
+
+    if (task.discipline.teacher.id !== req.userId) {
+      return res.status(401).json({
+        error:
+          "Você não tem permissão para fazer alterações nas atividades desta disciplina",
+      });
+    }
+
+    let updatedTask = {};
+    req.body.title && (updatedTask = { title: req.body.title });
+    req.body.description &&
+      (updatedTask = { ...updatedTask, description: req.body.description });
+    req.body.code && (updatedTask = { ...updatedTask, code: req.body.code });
+
+    let response = await task.update(updatedTask);
+
+    return res.json({
+      id: response.id,
+      discipline: response.discipline,
+      title: response.title,
+      description: response.description,
+      code: response.code,
+    });
+  }
 }
 
 export default new TaskController();
