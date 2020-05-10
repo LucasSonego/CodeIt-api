@@ -132,6 +132,36 @@ class TaskController {
       code: response.code,
     });
   }
+
+  async close(req, res) {
+    const task = await Task.findByPk(req.params.id, {
+      include: [
+        {
+          model: Discipline,
+          as: "discipline",
+          attributes: ["teacher_id"],
+        },
+      ],
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        error: "Não há nenhuma tarefa com este id",
+      });
+    }
+
+    if (task.discipline.teacher_id !== req.userId) {
+      return res.status(401).json({
+        error:
+          "Você não tem permissão para fazer alterações nas atividades desta disciplina",
+      });
+    }
+
+    await task.destroy();
+    return res.status(200).json({
+      message: "Tarefa fechada com sucesso",
+    });
+  }
 }
 
 export default new TaskController();
