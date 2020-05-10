@@ -15,3 +15,4 @@ import "./enrollments/delete.test";
 
 import "./tasks/create.test";
 import "./tasks/update.test";
+import "./tasks/close.test";
