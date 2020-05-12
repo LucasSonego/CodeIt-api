@@ -67,6 +67,40 @@ class TaskController {
     });
   }
 
+  async index(req, res) {
+    if (req.query.discipline) {
+      const [discipline, tasks] = await Promise.all([
+        Discipline.findByPk(req.query.discipline),
+        Task.findAll({
+          where: { discipline_id: req.query.discipline },
+          attributes: ["id", "title", "description", "code", "closed_at"],
+          paranoid: false,
+        }),
+      ]);
+
+      if (!discipline) {
+        return res.status(404).json({
+          error: "Não há nenhuma disciplina cadastrada com este código",
+        });
+      }
+
+      let open = [];
+      let closed = [];
+      tasks.map(task => {
+        if (task.closed_at === null) {
+          open.push(task);
+        } else {
+          closed.push(task);
+        }
+      });
+
+      return res.json({
+        open,
+        closed,
+      });
+    }
+  }
+
   async update(req, res) {
     const schema = yup.object().shape({
       title: yup.string(),
