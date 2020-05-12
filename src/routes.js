@@ -35,5 +35,6 @@ routes.post("/tasks", TaskController.store);
 routes.put("/tasks/:id", TaskController.update);
 routes.delete("/tasks/:id", TaskController.close);
 routes.patch("/tasks/:id", TaskController.reopen);
+routes.get("/tasks", TaskController.index);
 
 export default routes;

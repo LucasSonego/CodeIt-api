@@ -17,3 +17,4 @@ import "./tasks/create.test";
 import "./tasks/update.test";
 import "./tasks/close.test";
 import "./tasks/reopen.test";
+import "./tasks/list.test";
