@@ -18,3 +18,5 @@ import "./tasks/update.test";
 import "./tasks/close.test";
 import "./tasks/reopen.test";
 import "./tasks/list.test";
+
+import "./answers/create.test";
