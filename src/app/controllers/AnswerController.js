@@ -16,10 +16,10 @@ class AnswerController {
     }
 
     const [task, userEnrolled, alreadyAnswered] = await Promise.all([
-      Task.findByPk(req.params.id),
+      Task.findByPk(req.params.task),
       Enrollment.findOne({ where: { student_id: req.userId } }),
       Answer.findOne({
-        where: { user_id: req.userId, task_id: req.params.id },
+        where: { user_id: req.userId, task_id: req.params.task },
       }),
     ]);
 
@@ -43,8 +43,8 @@ class AnswerController {
     }
 
     await Answer.create({
-      id: `${req.params.id}${req.userId}`,
-      task_id: req.params.id,
+      id: `${req.params.task}${req.userId}`,
+      task_id: req.params.task,
       user_id: req.userId,
       code: req.body.code,
     });
