@@ -38,6 +38,6 @@ routes.delete("/tasks/:id", TaskController.close);
 routes.patch("/tasks/:id", TaskController.reopen);
 routes.get("/tasks", TaskController.index);
 
-routes.post("/answers/:id", AnswerController.store);
+routes.post("/answers/:task", AnswerController.store);
 
 export default routes;
