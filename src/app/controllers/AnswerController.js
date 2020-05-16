@@ -16,7 +16,9 @@ class AnswerController {
     }
 
     const [task, userEnrolled, alreadyAnswered] = await Promise.all([
-      Task.findByPk(req.params.task),
+      Task.findByPk(req.params.task, {
+        attributes: ["id", "title", "description", "code", "closed_at"],
+      }),
       Enrollment.findOne({ where: { student_id: req.userId } }),
       Answer.findOne({
         where: { user_id: req.userId, task_id: req.params.task },
@@ -42,7 +44,7 @@ class AnswerController {
       });
     }
 
-    await Answer.create({
+    const { id, code } = await Answer.create({
       id: `${req.params.task}${req.userId}`,
       task_id: req.params.task,
       user_id: req.userId,
@@ -50,7 +52,9 @@ class AnswerController {
     });
 
     return res.status(200).json({
-      message: "Resposta enviada com sucesso",
+      id,
+      task,
+      code,
     });
   }
 
@@ -67,6 +71,14 @@ class AnswerController {
 
     const answer = await Answer.findOne({
       where: { user_id: req.userId, task_id: req.params.task },
+      attributes: ["id", "code", "accepted_at"],
+      include: [
+        {
+          model: Task,
+          as: "task",
+          attributes: ["id", "title", "description", "code", "closed_at"],
+        },
+      ],
     });
 
     if (!answer) {
@@ -84,7 +96,9 @@ class AnswerController {
     await answer.update({ code: req.body.code });
 
     return res.json({
-      message: "Resposta alterada com sucesso",
+      id: answer.id,
+      task: answer.task,
+      code: req.body.code,
     });
   }
 }
