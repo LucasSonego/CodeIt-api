@@ -53,6 +53,40 @@ class AnswerController {
       message: "Resposta enviada com sucesso",
     });
   }
+
+  async update(req, res) {
+    const schema = yup.object().shape({
+      code: yup.string().required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({
+        error: "Um ou mais campos não foram preenchidos corretamente",
+      });
+    }
+
+    const answer = await Answer.findOne({
+      where: { user_id: req.userId, task_id: req.params.task },
+    });
+
+    if (!answer) {
+      return res.status(404).json({
+        error: "Não há uma resposta sua para esta tarefa",
+      });
+    }
+
+    if (answer.accepted_at !== null) {
+      return res.status(403).json({
+        error: "Você não pode alterar uma resposta que já foi aceita",
+      });
+    }
+
+    await answer.update({ code: req.body.code });
+
+    return res.json({
+      message: "Resposta alterada com sucesso",
+    });
+  }
 }
 
 export default new AnswerController();

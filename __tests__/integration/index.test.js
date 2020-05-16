@@ -20,3 +20,4 @@ import "./tasks/reopen.test";
 import "./tasks/list.test";
 
 import "./answers/create.test";
+import "./answers/update.test";
