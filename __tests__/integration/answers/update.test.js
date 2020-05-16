@@ -91,7 +91,12 @@ describe("Testes de alteração de respostas", () => {
       });
 
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe("Resposta alterada com sucesso");
+    expect(response.body).toHaveProperty("id");
+    expect(response.body.task.id).toBe(task.id);
+    expect(response.body.task.title).toBe(task.title);
+    expect(response.body.task.description).toBe(task.description);
+    expect(response.body.task.code).toBe(task.code);
+    expect(response.body.code).toBe("function updating()");
   });
 
   test("Validação dos campos da requisição", async () => {
