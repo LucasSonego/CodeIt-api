@@ -39,5 +39,6 @@ routes.patch("/tasks/:id", TaskController.reopen);
 routes.get("/tasks", TaskController.index);
 
 routes.post("/answers/:task", AnswerController.store);
+routes.put("/answers/:task", AnswerController.update);
 
 export default routes;
