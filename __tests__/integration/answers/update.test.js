@@ -11,7 +11,6 @@ describe("Testes de alteração de respostas", () => {
     name: "Testing The Code",
   };
   let task = {
-    discipline_id: discipline.id,
     title: "Mussum Ipsum, cacilds vidis litro abertis.",
     description:
       "Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis.",
@@ -68,7 +67,7 @@ describe("Testes de alteração de respostas", () => {
       .set("Authorization", "Bearer " + student.token);
 
     const taskResponse = await request(app)
-      .post("/tasks")
+      .post(`/tasks/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher.token)
       .send({ ...task });
 

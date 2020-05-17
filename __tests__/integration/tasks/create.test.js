@@ -11,7 +11,6 @@ describe("Testes de criação de tarefas", () => {
     name: "Testing The Code",
   };
   let task = {
-    discipline_id: discipline.id,
     title: "Mussum Ipsum, cacilds vidis litro abertis.",
     description:
       "Quem manda na minha terra sou euzis! Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Em pé sem cair, deitado sem dormir, sentado sem cochilar e fazendo pose.",
@@ -63,7 +62,7 @@ describe("Testes de criação de tarefas", () => {
 
   test("Criar uma tarefa", async () => {
     const response = await request(app)
-      .post("/tasks")
+      .post(`/tasks/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({ ...task });
 
@@ -81,7 +80,7 @@ describe("Testes de criação de tarefas", () => {
 
   test("Validação dos campos da requisição", async () => {
     const response = await request(app)
-      .post("/tasks")
+      .post(`/tasks/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({
         discipline_id: discipline.id,
@@ -99,10 +98,9 @@ describe("Testes de criação de tarefas", () => {
 
   test("Validação de disiplina", async () => {
     const response = await request(app)
-      .post("/tasks")
+      .post(`/tasks/~invalid~`)
       .set("Authorization", "Bearer " + teacher1.token)
       .send({
-        discipline_id: "~invalid discipline~",
         title: "Test",
         description: "test test test",
         code: "function test(){}",
@@ -117,7 +115,7 @@ describe("Testes de criação de tarefas", () => {
 
   test("Validação de permissão de criação de tarefa", async () => {
     const response = await request(app)
-      .post("/tasks")
+      .post(`/tasks/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher2.token)
       .send({
         discipline_id: discipline.id,
