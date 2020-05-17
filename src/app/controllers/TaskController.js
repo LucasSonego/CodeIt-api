@@ -8,7 +8,6 @@ import User from "../models/User";
 class TaskController {
   async store(req, res) {
     const schema = yup.object().shape({
-      discipline_id: yup.string().required(),
       title: yup.string().required(),
       description: yup.string().required(),
       code: yup.string(),
@@ -20,7 +19,7 @@ class TaskController {
       });
     }
 
-    const discipline = await Discipline.findByPk(req.body.discipline_id, {
+    const discipline = await Discipline.findByPk(req.params.discipline, {
       attributes: ["id", "name"],
       include: [
         {

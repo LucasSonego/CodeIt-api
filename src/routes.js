@@ -32,7 +32,7 @@ routes.delete("/disciplines/:id", DisciplineController.delete);
 routes.post("/enrollments/:discipline", EnrollmentController.store);
 routes.delete("/enrollments/:discipline", EnrollmentController.delete);
 
-routes.post("/tasks", TaskController.store);
+routes.post("/tasks/:discipline", TaskController.store);
 routes.put("/tasks/:id", TaskController.update);
 routes.delete("/tasks/:id", TaskController.close);
 routes.patch("/tasks/:id", TaskController.reopen);
