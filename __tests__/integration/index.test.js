@@ -21,3 +21,5 @@ import "./tasks/list.test";
 
 import "./answers/create.test";
 import "./answers/update.test";
+
+import "./feedback/send.test";
