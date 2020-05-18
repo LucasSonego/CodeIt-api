@@ -7,6 +7,7 @@ import DisciplineController from "./app/controllers/DisciplineController";
 import EnrollmentController from "./app/controllers/EnrollmentController";
 import TaskController from "./app/controllers/TaskController";
 import AnswerController from "./app/controllers/AnswerController";
+import FeedbackController from "./app/controllers/FeedbackController";
 
 import authMiddleware from "./app/middlewares/authMiddleware";
 
@@ -40,5 +41,7 @@ routes.get("/tasks", TaskController.index);
 
 routes.post("/answers/:task", AnswerController.store);
 routes.put("/answers/:task", AnswerController.update);
+
+routes.put("/feedback/:answer", FeedbackController.store);
 
 export default routes;
