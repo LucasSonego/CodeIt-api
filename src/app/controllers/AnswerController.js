@@ -2,6 +2,9 @@ import * as yup from "yup";
 import Answer from "../models/Answer";
 import Task from "../models/Task";
 import Enrollment from "../models/Enrollment";
+import User from "../models/User";
+import Discipline from "../models/Discipline";
+import Answer from "../models/Answer";
 
 class AnswerController {
   async store(req, res) {
@@ -100,6 +103,60 @@ class AnswerController {
       task: answer.task,
       code: req.body.code,
     });
+  }
+
+  async index(req, res) {
+    const task = await Task.findByPk(req.params.task, {
+      attributes: ["id"],
+      include: [
+        {
+          model: Discipline,
+          as: "discipline",
+          attributes: ["id"],
+          paranoid: false,
+          include: [
+            {
+              model: User,
+              as: "teacher",
+              attributes: ["id"],
+            },
+          ],
+        },
+        {
+          model: Answer,
+          as: "answers",
+          attributes: ["code", "feedback", "feedback_code", "accepted_at"],
+          include: [
+            {
+              model: User,
+              as: "student",
+              attributes: ["id", "name", "email"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!task) {
+      return res.status(404).json({
+        error: "Não há nenhuma tarefa com este ID",
+      });
+    }
+
+    let response;
+
+    if (req.userId === task.discipline.teacher.id) {
+      response = task.answers;
+    } else {
+      response = task.answers.find(answer => answer.student.id === req.userId);
+      if (!response) {
+        return res.status(404).json({
+          error: "Você não enviou uma resposta para esta tarefa",
+        });
+      }
+    }
+
+    return res.json(response);
   }
 }
 
