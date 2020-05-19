@@ -17,6 +17,10 @@ describe("Testes de alteração de respostas", () => {
     code: "function sucoDeCevadiss(){}",
   };
 
+  let answer = {
+    code: "function testing()",
+  };
+
   beforeAll(async () => {
     await truncate();
 
@@ -73,12 +77,12 @@ describe("Testes de alteração de respostas", () => {
 
     task = { ...task, id: taskResponse.body.id };
 
-    await request(app)
+    const answerResponse = await request(app)
       .post(`/answers/${task.id}`)
       .set("Authorization", "Bearer " + student.token)
-      .send({
-        code: "function testing()",
-      });
+      .send(answer);
+
+    answer = { ...answer, id: answerResponse.body.id };
   });
 
   test("Alterar uma resposta de uma tarefa", async () => {
@@ -123,18 +127,22 @@ describe("Testes de alteração de respostas", () => {
     );
   });
 
-  // TODO
-  // test("Verificar se o a resposta já foi aceita", async () => {
-  //   const response = await request(app)
-  //     .put(`/answers/${task.id}`)
-  //     .set("Authorization", "Bearer " + student.token)
-  //     .send({
-  //       code: "function updating()",
-  //     });
-  //
-  //   expect(response.status).toBe(403);
-  //   expect(response.body.error).toBe(
-  //     "Você não pode alterar uma resposta que já foi aceita"
-  //   );
-  // });
+  test("Verificar se o a resposta já foi aceita", async () => {
+    await request(app)
+      .put(`/feedback/${answer.id}`)
+      .set("Authorization", "Bearer " + teacher.token)
+      .send({ accepted: true });
+
+    const response = await request(app)
+      .put(`/answers/${task.id}`)
+      .set("Authorization", "Bearer " + student.token)
+      .send({
+        code: "function updating()",
+      });
+
+    expect(response.status).toBe(403);
+    expect(response.body.error).toBe(
+      "Você não pode alterar uma resposta que já foi aceita"
+    );
+  });
 });
