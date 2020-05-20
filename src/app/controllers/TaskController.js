@@ -4,6 +4,8 @@ import randomId from "random-base64-string";
 import Discipline from "../models/Discipline";
 import Task from "../models/Task";
 import User from "../models/User";
+import Enrollment from "../models/Enrollment";
+import Answer from "../models/Answer";
 
 class TaskController {
   async store(req, res) {
@@ -98,6 +100,56 @@ class TaskController {
         closed,
       });
     }
+
+    const data = await Discipline.findAll({
+      attributes: ["id", "name"],
+      include: [
+        {
+          model: Enrollment,
+          as: "enrollments",
+          where: { student_id: req.userId },
+          required: true,
+          attributes: [],
+        },
+        {
+          model: Task,
+          as: "tasks",
+          attributes: ["id", "title", "description", "code", "closed_at"],
+          paranoid: false,
+          include: [
+            {
+              model: Answer,
+              as: "answers",
+              where: { user_id: req.userId },
+              attributes: ["code", "feedback", "feedback_code", "accepted_at"],
+              required: false,
+            },
+          ],
+        },
+      ],
+    });
+
+    const response = data.map(discipline => {
+      let tasks = discipline.tasks.map(task => {
+        let answer = task.answers[0] ? task.answers[0] : null;
+        return {
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          code: task.code,
+          closed_at: task.closed_at,
+          answer,
+        };
+      });
+
+      return {
+        id: discipline.id,
+        name: discipline.name,
+        tasks,
+      };
+    });
+
+    return res.json(response);
   }
 
   async update(req, res) {
