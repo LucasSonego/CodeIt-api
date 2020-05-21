@@ -76,6 +76,26 @@ class TaskController {
           where: { discipline_id: req.query.discipline },
           attributes: ["id", "title", "description", "code", "closed_at"],
           paranoid: false,
+          include: [
+            {
+              model: Answer,
+              as: "answers",
+              attributes: [
+                "id",
+                "code",
+                "feedback",
+                "feedback_code",
+                "accepted_at",
+              ],
+              include: [
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["id", "name", "email"],
+                },
+              ],
+            },
+          ],
         }),
       ]);
 
@@ -85,9 +105,40 @@ class TaskController {
         });
       }
 
+      let response = [...tasks];
+      if (discipline.teacher_id !== req.userId) {
+        response = tasks.map(task => {
+          let answer = task.answers.find(answer =>
+            answer.student.id === req.userId ? answer : null
+          );
+          if (answer) {
+            return {
+              id: task.id,
+              title: task.title,
+              description: task.description,
+              code: task.code,
+              closed_at: task.closed_at,
+              answer: {
+                code: answer.code,
+                feedback: answer.feedback,
+                feedback_code: answer.feedback_code,
+                accepted_at: answer.accepted_at,
+              },
+            };
+          }
+          return {
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            code: task.code,
+            closed_at: task.closed_at,
+          };
+        });
+      }
+
       let open = [];
       let closed = [];
-      tasks.map(task => {
+      response.map(task => {
         if (task.closed_at === null) {
           open.push(task);
         } else {

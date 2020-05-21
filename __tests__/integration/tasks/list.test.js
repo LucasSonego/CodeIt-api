@@ -5,7 +5,7 @@ import factory from "../../factories";
 import truncate from "../../util/truncate";
 
 describe("Testes de listagem de tarefas", () => {
-  let teacher, student;
+  let teacher, student1, student2;
   let discipline1 = {
     id: "2020DEE123",
     name: "Testing The Code",
@@ -26,9 +26,12 @@ describe("Testes de listagem de tarefas", () => {
 
   beforeAll(async () => {
     await truncate();
-    const [teacherData, studentData] = await Promise.all([
+    const [teacherData, student1Data, student2Data] = await Promise.all([
       factory.attrs("User", {
         is_teacher: true,
+      }),
+      factory.attrs("User", {
+        is_teacher: false,
       }),
       factory.attrs("User", {
         is_teacher: false,
@@ -37,17 +40,25 @@ describe("Testes de listagem de tarefas", () => {
 
     await Promise.all([
       request(app).post("/users").send(teacherData),
-      request(app).post("/users").send(studentData),
+      request(app).post("/users").send(student1Data),
     ]);
 
-    const [responseTeacher, responseStudent] = await Promise.all([
+    const [
+      responseTeacher,
+      responseStudent1,
+      responseStudent2,
+    ] = await Promise.all([
       request(app).post("/sessions").send({
         email: teacherData.email,
         password: teacherData.password,
       }),
       request(app).post("/sessions").send({
-        email: studentData.email,
-        password: studentData.password,
+        email: student1Data.email,
+        password: student1Data.password,
+      }),
+      request(app).post("/sessions").send({
+        email: student2Data.email,
+        password: student2Data.password,
       }),
     ]);
 
@@ -56,9 +67,14 @@ describe("Testes de listagem de tarefas", () => {
       token: responseTeacher.body.token,
     };
 
-    student = {
-      ...studentData,
-      token: responseStudent.body.token,
+    student1 = {
+      ...student1Data,
+      token: responseStudent1.body.token,
+    };
+
+    student2 = {
+      ...student2Data,
+      token: responseStudent2.body.token,
     };
 
     await Promise.all([
@@ -79,10 +95,13 @@ describe("Testes de listagem de tarefas", () => {
     await Promise.all([
       request(app)
         .post(`/enrollments/${discipline1.id}`)
-        .set("Authorization", "Bearer " + student.token),
+        .set("Authorization", "Bearer " + student1.token),
       request(app)
         .post(`/enrollments/${discipline2.id}`)
-        .set("Authorization", "Bearer " + student.token),
+        .set("Authorization", "Bearer " + student1.token),
+      request(app)
+        .post(`/enrollments/${discipline1.id}`)
+        .set("Authorization", "Bearer " + student2.token),
     ]);
 
     const [taskResponse, closedTaskResponse, task2Response] = await Promise.all(
@@ -106,24 +125,47 @@ describe("Testes de listagem de tarefas", () => {
     closedTask = { ...task, id: closedTaskResponse.body.id };
     task2 = { ...task, id: task2Response.body.id };
 
+    await Promise.all([
+      request(app)
+        .post(`/answers/${task.id}`)
+        .set("Authorization", "Bearer " + student1.token)
+        .send({ code: "function testing()" }),
+      request(app)
+        .post(`/answers/${task.id}`)
+        .set("Authorization", "Bearer " + student2.token)
+        .send({ code: "function testing()" }),
+    ]);
+
     await request(app)
       .delete(`/tasks/${closedTask.id}`)
       .set("Authorization", "Bearer " + teacher.token);
   });
 
-  test("Listar toda as tarefas de uma disciplina", async () => {
+  test("Listar toda as tarefas de uma disciplina (para um professor)", async () => {
     const response = await request(app)
-      .get("/tasks/")
+      .get("/tasks")
       .set("Authorization", "Bearer " + teacher.token)
       .query({ discipline: discipline1.id });
 
     expect(response.body.open[0].id).toBe(task.id);
+    expect(response.body.open[0]).toHaveProperty("answers");
+    expect(response.body.closed[0].id).toBe(closedTask.id);
+  });
+
+  test("Listar toda as tarefas de uma disciplina (para um estudante)", async () => {
+    const response = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student1.token)
+      .query({ discipline: discipline1.id });
+
+    expect(response.body.open[0].id).toBe(task.id);
+    expect(response.body.open[0]).toHaveProperty("answer");
     expect(response.body.closed[0].id).toBe(closedTask.id);
   });
 
   test("Validação de disciplina", async () => {
     const response = await request(app)
-      .get("/tasks/")
+      .get("/tasks")
       .set("Authorization", "Bearer " + teacher.token)
       .query({ discipline: "~invalid~" });
 
@@ -135,8 +177,8 @@ describe("Testes de listagem de tarefas", () => {
 
   test("Listar todas as tarefas das disciplinas que um usuario está matriculado", async () => {
     const response = await request(app)
-      .get("/tasks/")
-      .set("Authorization", "Bearer " + student.token);
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student1.token);
 
     expect(response.body.length).toBe(2);
     expect(response.body[0].id).toBe(discipline1.id);
