@@ -5,6 +5,9 @@ import UserController from "./app/controllers/UserController";
 import SessionController from "./app/controllers/SessionController";
 import DisciplineController from "./app/controllers/DisciplineController";
 import EnrollmentController from "./app/controllers/EnrollmentController";
+import TaskController from "./app/controllers/TaskController";
+import AnswerController from "./app/controllers/AnswerController";
+import FeedbackController from "./app/controllers/FeedbackController";
 
 import authMiddleware from "./app/middlewares/authMiddleware";
 
@@ -29,5 +32,17 @@ routes.delete("/disciplines/:id", DisciplineController.delete);
 
 routes.post("/enrollments/:discipline", EnrollmentController.store);
 routes.delete("/enrollments/:discipline", EnrollmentController.delete);
+
+routes.post("/tasks/:discipline", TaskController.store);
+routes.put("/tasks/:id", TaskController.update);
+routes.delete("/tasks/:id", TaskController.close);
+routes.patch("/tasks/:id", TaskController.reopen);
+routes.get("/tasks", TaskController.index);
+
+routes.post("/answers/:task", AnswerController.store);
+routes.put("/answers/:task", AnswerController.update);
+routes.get("/answers/:task", AnswerController.index);
+
+routes.put("/feedback/:answer", FeedbackController.store);
 
 export default routes;

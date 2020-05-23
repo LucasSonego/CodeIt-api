@@ -16,8 +16,18 @@
 - [Matrículas](#Matrículas)
   - [Efetuar matrícula](#Efetuar-matrícula)
   - [Remover matrícula](#Remover-matrícula)
-
-
+- [Tarefas](#Tarefas)
+  - [Criar](#Criar-tarefa)
+  - [Editar](#Editar-tarefa)
+  - [Listar](#Listar-tarefas)
+  - [Fechar](#Fechar-tarefa-\(não-aceitar-mais-respostas\))
+  - [Reabrir](#Reabrir-tarefa-\(voltar-a-aceitar-respostas\))
+- [Respostas](#Respostas)
+  - [Enviar](#Enviar-resposta)
+  - [Editar](#Editar-resposta)
+  - [Buscar](#Buscar-resposta)
+- [Feedback](#Feedback)
+  - [Enviar](#Enviar-feedback)
 
 ## Usuários
 
@@ -185,14 +195,14 @@ O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Listar todos os usuários
 
-Método `GET` <br>
-Rota `/users` <br>
+Método: `GET` <br>
+Rota: `/users` <br>
 O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Listar apenas os professores ou estudantes
 
-Método `GET` <br>
-Rota `/users` <br>Query params `type=teachers` ou `type=students` <br>O cabeçalho da requisição deve conter o token de autenticação.
+Método: `GET` <br>
+Rota: `/users` <br>Query params: `type=teachers` ou `type=students` <br>O cabeçalho da requisição deve conter o token de autenticação.
 
 #### Corpo da resposta:
 
@@ -305,7 +315,7 @@ O cabeçalho deve conter o token de autenticação de um usuário que seja profe
 
 #### Corpo da requisição
 
-Método `PUT` <br>Rota `/disciplines/2020D1` \*_id da disciplina que deseja editar_<br>
+Método: `PUT` <br>Rota: `/disciplines/2020D1` \*_id da disciplina que deseja editar_<br>
 
 O cabeçalho da requisição deve conter o token de autenticação do professor desta disciplina
 
@@ -336,11 +346,11 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 #### Listar todas as disciplinas
 
-Método `GET` <br>Rota `/disciplines` <br>O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
+Método: `GET` <br>Rota: `/disciplines` <br>O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
 
 #### Buscar disciplinas de um único professor
 
-Método `GET` <br>Rota `/disciplines` <br>Query params (opcionais):<br>`teacher=231412` \*_id do professor_: Lista apenas as disciplinas do professor buscado.<br>`id=2020D1` \*_id da disciplina_: Retorna dados da disciplina buscada, e lista todos os estudantes matriculados nesta disciplina
+Método: `GET` <br>Rota: `/disciplines` <br>Query params (opcionais):<br>`teacher=231412` \*_id do professor_: Lista apenas as disciplinas do professor buscado.<br>`id=2020D1` \*_id da disciplina_: Retorna dados da disciplina buscada, e lista todos os estudantes matriculados nesta disciplina
 
 O cabeçalho da requisição deve conter um token válido, que pode ser tanto de um professor quanto de um estudante.
 
@@ -456,7 +466,7 @@ Com _query_ `id`:
 
 #### Requisição
 
-Método `DELETE` <br>Rota `/disciplines/2020D1` \*_id da disciplina que deseja deletar_
+Método: `DELETE` <br>Rota: `/disciplines/2020D1` \*_id da disciplina que deseja deletar_
 
 O cabeçalho da requisição deve conter o token de autenticação do professor desta disciplina
 
@@ -478,7 +488,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 #### Requisição
 
-Método `GET`<br>Rota `/enrollments/2020D1` \*_id da disciplina_
+Método: `GET`<br>Rota: `/enrollments/2020D1` \*_id da disciplina_
 
 O cabeçalho da requisição deve conter o token de autenticação do estudante
 
@@ -498,7 +508,7 @@ O cabeçalho da requisição deve conter o token de autenticação do estudante
 
 #### Requisição
 
-Método `DELETE`<br>Rota `/enrollments/2020D1` \*_id da disciplina_
+Método: `DELETE`<br>Rota: `/enrollments/2020D1` \*_id da disciplina_
 
 O cabeçalho da requisição deve conter o token de autenticação do estudante matriculado
 
@@ -509,3 +519,357 @@ O cabeçalho da requisição deve conter o token de autenticação do estudante 
   "message": "Matrícula removida"
 }
 ```
+
+
+
+## Tarefas
+
+### Criar Tarefa
+
+#### Corpo da requisição 
+
+Método: `POST`<br>Rota: `/tasks/2020D1` _*id da disciplina_
+
+O cabeçalho da requisição deve conter o token de autenticação do professor vinculado à disciplina em que a tarefa será criada
+
+```json
+{
+    "title": "Task 1",
+    "description": "Description for task 1",
+    "code": "function example()"
+}
+```
+
+| Campo       | Tipo de dado | Requisitos | Obrigatório |
+| ----------- | ------------ | ---------- | ----------- |
+| title       | String       | -          | sim         |
+| description | String       | -          | sim         |
+| code        | String       | -          | não         |
+
+
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1wAFgrq",
+  "discipline": {
+    "id": "2020D1",
+    "name": "Test discipline 1",
+    "teacher": {
+      "id": "654321",
+      "name": "Test Teacher",
+      "email": "testteacher@ufpr.br"
+    }
+  },
+  "title": "Task 1",
+  "description": "Description for task 1",
+  "code": "function example()"
+}
+```
+
+
+
+### Editar Tarefa
+
+#### Corpo da requisição 
+
+Método: `PUT`<br>Rota: `/tasks/2020D1` _*id da disciplina_
+
+O cabeçalho da requisição deve conter o token de autenticação do professor vinculado à disciplina em que a tarefa foi criada
+
+```json
+{
+    "title": "Task 1",
+    "description": "Description for task 1",
+    "code": "function example()"
+}
+```
+
+| Campo       | Tipo de dado | Requisitos | Obrigatório |
+| ----------- | ------------ | ---------- | ----------- |
+| title       | String       | -          | não         |
+| description | String       | -          | não         |
+| code        | String       | -          | não         |
+
+
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1wAFgrq",
+  "discipline": {
+    "id": "2020D1",
+    "name": "Test discipline 1",
+    "teacher": {
+      "id": "654321",
+      "name": "Test Teacher",
+      "email": "testteacher@ufpr.br"
+    }
+  },
+  "title": "Task 1",
+  "description": "Description for task 1",
+  "code": "function example()"
+}
+```
+
+
+
+### Listar tarefas
+
+#### Requisição
+
+Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1` _*id da disciplina_
+
+#### Corpo da resposta (sem query)
+
+```json
+[
+  {
+    "id": "2020D1",
+    "name": "Test discipline 1",
+    "tasks": [
+      {
+        "id": "2020D1O0hsGW",
+        "title": "Teste",
+        "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
+        "code": "function teste(){}",
+        "closed_at": null,
+        "answer": null
+      }
+    ]
+  },
+  {
+    "id": "2020D2",
+    "name": "Test discipline 2",
+    "tasks": [
+      {
+        "id": "2020D2JwqUcr",
+        "title": "Teste",
+        "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
+        "code": "function teste(){}",
+        "closed_at": null,
+        "answer": null
+      },
+      {
+        "id": "2020D2di5mxL",
+        "title": "Teste",
+        "description": "Mussum Ipsum, cacilds vidis litro abertis.",
+        "code": "function teste(){}",
+        "closed_at": "2020-05-20T18:02:35.757Z",
+        "answer": {
+          "code": "function teste()",
+          "feedback": null,
+          "feedback_code": null,
+          "accepted_at": "2020-05-18T00:10:48.309Z"
+        }
+      }
+    ]
+  }
+]
+```
+
+
+
+#### Corpo da resposta (com query `discipline=2020D1`)
+
+```json
+{
+  "open": [
+    {
+      "id": "2020D1JwqUcr",
+      "title": "Teste",
+      "description": "Mussum Ipsum, cacilds vidis litro abertis.",
+      "code": "function teste(){}",
+      "closed_at": null
+    }
+  ],
+  "closed": [
+    {
+      "id": "2020D1di5mxL",
+      "title": "Teste",
+      "description": "Mussum Ipsum, cacilds vidis litro abertis.",
+      "code": "function teste(){}",
+      "closed_at": "2020-05-20T18:02:35.757Z"
+    }
+  ]
+}
+```
+
+
+
+### Fechar tarefa (não aceitar mais respostas)
+
+#### Corpo da requisição
+
+Método: `DELETE`<br>Rota: `/tasks/2020D1wAFgrq` _*id da tarefa_
+
+O cabeçalho da requisição deve conter o token de autenticação do professor vinculado à disciplina em que a tarefa foi criada
+
+#### Corpo da resposta 
+
+```json
+{
+  "message": "Tarefa fechada com sucesso"
+}
+```
+
+
+
+### Reabrir tarefa (voltar a aceitar respostas)
+
+#### Corpo da requisição
+
+Método: `PATCH`<br>Rota: `/tasks/2020D1wAFgrq` _*id da tarefa_
+
+O cabeçalho da requisição deve conter o token de autenticação do professor vinculado à disciplina em que a tarefa foi criada
+
+#### Corpo da resposta 
+
+```json
+{
+  "message": "Tarefa reaberta com sucesso"
+}
+```
+
+
+
+## Respostas
+
+### Enviar resposta
+
+#### Corpo da requisição
+
+Método: `POST`<br>Rota: `/answers/2020D1JwqUcr` _*id da tarefa_
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante matriculadona disciplina em que a tarefa foi criada
+
+```json
+{
+    "code": "function example()"
+}
+```
+
+| Campo | Tipo de dado | Requisitos | Obrigatório |
+| ----- | ------------ | ---------- | ----------- |
+| code  | String       | -          | sim         |
+
+
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1JwqUcr20184906",
+  "task": {
+    "id": "2020D1JwqUcr",
+    "title": "Title for the task",
+    "description": "Description for the task",
+    "code": "function exampleTask()",
+    "closed_at": null
+  },
+  "code": "function example"
+}
+```
+
+
+
+### Editar resposta
+
+#### Corpo da requisição
+
+Método: `PUT`<br>Rota: `/answers/2020D1JwqUcr` _*id da tarefa_
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante matriculadona disciplina em que a tarefa foi criada
+
+```json
+{
+    "code": "function example()"
+}
+```
+
+
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1JwqUcr20184906",
+  "task": {
+    "id": "2020D1JwqUcr",
+    "title": "Title for the task",
+    "description": "Description for the task",
+    "code": "function exampleTask()",
+    "closed_at": null
+  },
+  "code": "function example"
+}
+```
+
+
+
+### Buscar resposta
+
+#### Corpo da requisição
+
+Método: `GET`<br>Rota: `/answers/2020D1JwqUcr` _*id da tarefa_
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante matriculadona disciplina em que a tarefa foi criada
+
+#### Corpo da resposta
+
+```json
+{
+  "code": "function example()",
+  "feedback": "Nice",
+  "feedback_code": null,
+  "accepted_at": "2020-05-18T00:10:48.309Z",
+  "student": {
+    "id": "123456",
+    "name": "Test User",
+    "email": "testuser@ufpr.br"
+  }
+}
+```
+
+
+
+## Feedback
+
+### Enviar feedback
+
+#### Corpo da requisição
+
+Método: `PUT`<br>Rota: `/feedback/2020D1JwqUcr20184906` _*id da resposta_
+
+O cabeçalho da requisição deve conter o token de autenticação do professor vinculado à disciplina em que a tarefa foi criada
+
+```json
+{
+  "feedback": "Some feedback",
+  "code": "function someCode()",
+  "accepted": true
+}
+```
+
+| Campo    | Tipo de dado | Requisitos | Obrigatório |
+| -------- | ------------ | ---------- | ----------- |
+| feedback | String       | -          | não         |
+| code     | String       | -          | não         |
+| accepted | Boolean      | -          | não         |
+
+
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "2020D1JwqUcr20184906",
+  "code": "function example()",
+  "feedback": "Some feedback",
+  "feedback_code": "function someCode()",
+  "accepted_at": "2020-05-18T00:10:48.309Z"
+}
+```
+

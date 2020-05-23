@@ -5,8 +5,10 @@ import databaseConfig from "../config/database";
 import User from "../app/models/User";
 import Discipline from "../app/models/Discipline";
 import Enrollment from "../app/models/Enrollment";
+import Task from "../app/models/Task";
+import Answer from "../app/models/Answer";
 
-const models = [User, Discipline, Enrollment];
+const models = [User, Discipline, Enrollment, Task, Answer];
 
 class Database {
   constructor() {
