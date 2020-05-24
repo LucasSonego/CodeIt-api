@@ -428,7 +428,7 @@ Com _query_ `teacher`:
 ]
 ```
 
-Com _query_ `id`:
+Com _query_ `id` (para o professor vinculado a disciplina):
 
 ```json
 {
@@ -457,6 +457,20 @@ Com _query_ `id`:
       }
     }
   ]
+}
+```
+
+Com _query_ `id` (para um estudante):
+
+```json
+{
+  "id": "2020D1",
+  "name": "Disciplina 1",
+  "teacher": {
+    "id": "654321",
+    "name": "Teacher 1",
+    "email": "teacher1@ufpr.br"
+  }
 }
 ```
 
