@@ -75,7 +75,7 @@ class DisciplineController {
 
       return res.json(response);
     } else if (req.query.id) {
-      const response = await Discipline.findByPk(req.query.id, {
+      const discipline = await Discipline.findByPk(req.query.id, {
         attributes: ["id", "name"],
         include: [
           {
@@ -83,33 +83,48 @@ class DisciplineController {
             as: "teacher",
             attributes: ["id", "name", "email"],
           },
-          {
-            model: Enrollment,
-            as: "enrollments",
-            attributes: ["created_at"],
-            include: [
-              {
-                model: User,
-                as: "student",
-                attributes: ["id", "name", "email"],
-              },
-            ],
-          },
-          {
-            model: Task,
-            as: "tasks",
-            attributes: ["id", "title", "description", "code"],
-          },
         ],
       });
 
-      if (!response) {
+      if (!discipline) {
         return res.status(404).json({
           error: "Não há nenhuma disciplina cadastrada com este código",
         });
       }
 
-      return res.json(response);
+      if (discipline.teacher.id !== req.userId) {
+        return res.json(discipline);
+      } else {
+        const response = await Discipline.findByPk(req.query.id, {
+          attributes: ["id", "name"],
+          include: [
+            {
+              model: User,
+              as: "teacher",
+              attributes: ["id", "name", "email"],
+            },
+            {
+              model: Enrollment,
+              as: "enrollments",
+              attributes: ["created_at"],
+              include: [
+                {
+                  model: User,
+                  as: "student",
+                  attributes: ["id", "name", "email"],
+                },
+              ],
+            },
+            {
+              model: Task,
+              as: "tasks",
+              attributes: ["id", "title", "description", "code", "closed_at"],
+            },
+          ],
+        });
+
+        return res.json(response);
+      }
     }
 
     const [userDisciplines, allDisciplines] = await Promise.all([
