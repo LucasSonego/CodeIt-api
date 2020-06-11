@@ -69,6 +69,34 @@ class TaskController {
   }
 
   async index(req, res) {
+    if (req.query.id) {
+      const task = await Task.findByPk(req.query.id, {
+        attributes: ["id", "title", "description", "code", "closed_at"],
+        include: [
+          {
+            model: Discipline,
+            as: "discipline",
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: User,
+                as: "teacher",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!task) {
+        return res.status(404).json({
+          error: "Não há nenhuma tarefa com este ID",
+        });
+      }
+
+      return res.json(task);
+    }
+
     if (req.query.discipline) {
       const [discipline, tasks] = await Promise.all([
         Discipline.findByPk(req.query.discipline),
