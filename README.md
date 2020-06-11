@@ -634,7 +634,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 #### Requisição
 
-Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1` _*id da disciplina_
+Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=2020D1` _*id da disciplina_<br>`id=2020D1wAFgrq` _*id da tarefa_
 
 #### Corpo da resposta (sem query)
 
@@ -708,6 +708,29 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
       "closed_at": "2020-05-20T18:02:35.757Z"
     }
   ]
+}
+```
+
+
+
+#### Corpo da resposta (com query `id=2020D1JwqUcr`)
+
+```json
+{
+  "id": "2020D1JwqUcr",
+  "title": "Teste",
+  "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
+  "code": "function teste(){}",
+  "closed_at": null,
+  "discipline": {
+    "id": "2020D1",
+    "name": "Test discipline 1",
+    "teacher": {
+      "id": "654321",
+      "name": "Test Teacher",
+      "email": "testteacher@ufpr.br"
+    }
+  }
 }
 ```
 
