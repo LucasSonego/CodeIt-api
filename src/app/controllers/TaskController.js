@@ -86,6 +86,7 @@ class TaskController {
             ],
           },
         ],
+        paranoid: false,
       });
 
       if (!task) {
