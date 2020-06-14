@@ -730,7 +730,8 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
       "name": "Test Teacher",
       "email": "testteacher@ufpr.br"
     }
-  }
+  },
+  "user_enrolled": true
 }
 ```
 
