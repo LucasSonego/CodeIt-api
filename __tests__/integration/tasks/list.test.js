@@ -41,6 +41,7 @@ describe("Testes de listagem de tarefas", () => {
     await Promise.all([
       request(app).post("/users").send(teacherData),
       request(app).post("/users").send(student1Data),
+      request(app).post("/users").send(student2Data),
     ]);
 
     const [
@@ -173,6 +174,39 @@ describe("Testes de listagem de tarefas", () => {
     expect(response.body.error).toBe(
       "Não há nenhuma disciplina cadastrada com este código"
     );
+  });
+
+  test("Buscar tarefa por id", async () => {
+    const response1 = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student2.token)
+      .query({ id: task.id });
+
+    const response2 = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student2.token)
+      .query({ id: task2.id });
+
+    expect(response1.body).not.toHaveProperty("error");
+    expect(response1.body.id).toBe(task.id);
+    expect(response1.body.title).toBe(task.title);
+    expect(response1.body.description).toBe(task.description);
+    expect(response1.body.code).toBe(task.code);
+    expect(response1.body.discipline.id).toBe(discipline1.id);
+    expect(response1.body.user_enrolled).toBe(true);
+
+    expect(response2.body).not.toHaveProperty("error");
+    expect(response2.body.user_enrolled).toBe(false);
+  });
+
+  test("Validação de tarefa na busca por id", async () => {
+    const response1 = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student2.token)
+      .query({ id: "~invalid~" });
+
+    expect(response1.body).toHaveProperty("error");
+    expect(response1.status).toBe(404);
   });
 
   test("Listar todas as tarefas das disciplinas que um usuario está matriculado", async () => {
