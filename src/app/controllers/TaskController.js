@@ -95,7 +95,19 @@ class TaskController {
         });
       }
 
-      return res.json(task);
+      const user_enrolled = await Enrollment.findOne({
+        where: { student_id: req.userId, discipline_id: task.discipline.id },
+      });
+
+      return res.json({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        code: task.code,
+        closed_at: task.closed_at,
+        discipline: task.discipline,
+        user_enrolled: !!user_enrolled,
+      });
     }
 
     if (req.query.discipline) {
