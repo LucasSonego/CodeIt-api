@@ -731,6 +731,13 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
       "email": "testteacher@ufpr.br"
     }
   },
+  "answer": {
+    "id": "2020D1JwqUcr123456",
+    "code": "function teste()",
+    "feedback": null,
+    "feedback_code": null,
+    "accepted_at": "2020-05-18T00:10:48.309Z"
+  },
   "user_enrolled": true
 }
 ```
