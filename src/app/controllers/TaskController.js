@@ -85,6 +85,19 @@ class TaskController {
               },
             ],
           },
+          {
+            model: Answer,
+            as: "answers",
+            where: { user_id: req.userId },
+            required: false,
+            attributes: [
+              "id",
+              "code",
+              "feedback",
+              "feedback_code",
+              "accepted_at",
+            ],
+          },
         ],
         paranoid: false,
       });
@@ -106,6 +119,7 @@ class TaskController {
         code: task.code,
         closed_at: task.closed_at,
         discipline: task.discipline,
+        answer: task.answers[0],
         user_enrolled: !!user_enrolled,
       });
     }
