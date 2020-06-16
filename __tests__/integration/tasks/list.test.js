@@ -209,6 +209,21 @@ describe("Testes de listagem de tarefas", () => {
     expect(response1.status).toBe(404);
   });
 
+  test("Incluir a resposta na busca por id, (caso o estudante ja tenha enviado uma resposta)", async () => {
+    const response1 = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student1.token)
+      .query({ id: task.id });
+
+    const response2 = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + student1.token)
+      .query({ id: task2.id });
+
+    expect(response1.body).toHaveProperty("answer");
+    expect(response2.body).not.toHaveProperty("answer");
+  });
+
   test("Listar todas as tarefas das disciplinas que um usuario está matriculado", async () => {
     const response = await request(app)
       .get("/tasks")
