@@ -636,7 +636,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=2020D1` _*id da disciplina_<br>`id=2020D1wAFgrq` _*id da tarefa_
 
-#### Corpo da resposta (sem query)
+#### Corpo da resposta (sem query, para um estudante)
 
 ```json
 [
@@ -683,6 +683,97 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
   }
 ]
 ```
+
+#### Corpo da resposta (sem query, para um professor)
+
+```json
+[
+  {
+    "id": "TD1",
+    "name": "Test Discipline 1",
+    "tasks": [
+      {
+        "id": "TD1di5mxL",
+        "title": "Task 1",
+        "description": "Task 1 desctiption",
+        "code": "function teste(){}",
+        "created_at": "2020-05-17T22:20:50.982Z",
+        "answers": [
+          {
+            "id": "TD1di5mxL123456",
+            "code": "function test()",
+            "feedback": null,
+            "feedback_code": null,
+            "created_at": "2020-05-17T22:22:18.801Z",
+            "updated_at": "2020-05-18T00:10:48.310Z",
+            "accepted_at": "2020-05-18T00:10:48.309Z",
+            "student": {
+              "id": "123456",
+              "name": "Test User",
+              "email": "testuser@ufpr.br"
+            }
+          },
+          {
+            "id": "TD1di5mxL112233",
+            "code": "function test()",
+            "feedback": null,
+            "feedback_code": null,
+            "created_at": "2020-05-18T00:10:48.309Z",
+            "updated_at": "2020-05-18T00:10:48.309Z",
+            "accepted_at": null,
+            "student": {
+              "id": "112233",
+              "name": "Test User 2",
+              "email": "testuser2@ufpr.br"
+            }
+          }
+        ]
+      },
+      {
+        "id": "TD1JwqUcr",
+        "title": "Task 2",
+        "description": "Task 2 description",
+        "code": "function test(){}",
+        "created_at": "2020-05-19T01:44:06.797Z",
+        "answers": []
+      }
+    ]
+  },
+  {
+    "id": "TD2",
+    "name": "Test Discipline 2",
+    "tasks": [
+      {
+        "id": "TD2Mzc2NT",
+        "title": "Tarefa respondida",
+        "description": "tarefa respondida",
+        "code": null,
+        "created_at": "2020-05-19T23:05:16.038Z",
+        "answers": [
+          {
+            "id": "TD2Mzc2NT123456",
+            "code": "function test()",
+            "feedback": null,
+            "feedback_code": null,
+            "created_at": "2020-06-18T17:02:17.238Z",
+            "updated_at": "2020-06-19T20:56:18.500Z",
+            "accepted_at": null,
+            "student": {
+              "id": "123456",
+              "name": "Test User",
+              "email": "testuser@ufpr.br"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+
+
+
 
 
 

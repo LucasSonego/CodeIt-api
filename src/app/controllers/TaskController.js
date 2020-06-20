@@ -207,6 +207,50 @@ class TaskController {
       });
     }
 
+    const userData = await User.findByPk(req.userId, {
+      attributes: ["is_teacher"],
+    });
+
+    if (userData.is_teacher) {
+      const response = await Discipline.findAll({
+        where: { teacher_id: req.userId },
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: Task,
+            as: "tasks",
+            attributes: ["id", "title", "description", "code", "created_at"],
+            include: [
+              {
+                model: Answer,
+                as: "answers",
+                attributes: [
+                  "id",
+                  "code",
+                  "feedback",
+                  "feedback_code",
+                  "created_at",
+                  "updated_at",
+                  "accepted_at",
+                ],
+                include: [
+                  {
+                    model: User,
+                    as: "student",
+                    attributes: ["id", "name", "email"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (response) {
+        return res.json(response);
+      }
+    }
+
     const data = await Discipline.findAll({
       attributes: ["id", "name"],
       include: [

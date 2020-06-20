@@ -78,20 +78,18 @@ describe("Testes de listagem de tarefas", () => {
       token: responseStudent2.body.token,
     };
 
-    await Promise.all([
-      request(app)
-        .post("/disciplines")
-        .set("Authorization", "Bearer " + teacher.token)
-        .send({
-          ...discipline1,
-        }),
-      request(app)
-        .post("/disciplines")
-        .set("Authorization", "Bearer " + teacher.token)
-        .send({
-          ...discipline2,
-        }),
-    ]);
+    await request(app)
+      .post("/disciplines")
+      .set("Authorization", "Bearer " + teacher.token)
+      .send({
+        ...discipline1,
+      });
+    await request(app)
+      .post("/disciplines")
+      .set("Authorization", "Bearer " + teacher.token)
+      .send({
+        ...discipline2,
+      });
 
     await Promise.all([
       request(app)
@@ -236,5 +234,21 @@ describe("Testes de listagem de tarefas", () => {
     expect(response.body[1].tasks.length).toBe(1);
     expect(response.body[1].id).toBe(discipline2.id);
     expect(response.body[1].name).toBe(discipline2.name);
+  });
+
+  test("Listar todas as tarefas de todas disciplinas de um professor", async () => {
+    const response = await request(app)
+      .get("/tasks")
+      .set("Authorization", "Bearer " + teacher.token);
+
+    expect(response.body.length).toBe(2);
+    expect(response.body[0].id).toBe(discipline1.id);
+    expect(response.body[0].name).toBe(discipline1.name);
+    expect(response.body[0].tasks.length).toBe(1);
+    expect(response.body[0].tasks[0].answers.length).toBe(2);
+    expect(response.body[1].id).toBe(discipline2.id);
+    expect(response.body[1].name).toBe(discipline2.name);
+    expect(response.body[1].tasks.length).toBe(1);
+    expect(response.body[1].tasks[0].answers.length).toBe(0);
   });
 });
