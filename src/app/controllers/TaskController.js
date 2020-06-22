@@ -219,7 +219,15 @@ class TaskController {
           {
             model: Task,
             as: "tasks",
-            attributes: ["id", "title", "description", "code", "created_at"],
+            attributes: [
+              "id",
+              "title",
+              "description",
+              "code",
+              "created_at",
+              "closed_at",
+            ],
+            paranoid: false,
             include: [
               {
                 model: Answer,
