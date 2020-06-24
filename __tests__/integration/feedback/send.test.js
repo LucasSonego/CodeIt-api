@@ -101,6 +101,7 @@ describe("Testes de envio de feedback", () => {
     expect(response.body.code).toBe(answer.code);
     expect(response.body.feedback).toBe(feedback.feedback);
     expect(response.body.feedback_code).toBe(feedback.code);
+    expect(response.body).toHaveProperty("feedback_at");
     expect(!!response.body.accepted_at).toBe(feedback.accepted);
   });
 

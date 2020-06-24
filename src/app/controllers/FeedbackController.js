@@ -55,17 +55,21 @@ class FeedbackController {
       });
     }
 
-    let isAccepted = req.body.accepted ? Date.now() : null;
+    let date = Date.now();
+
+    let isAccepted = req.body.accepted ? date : null;
 
     const {
       id,
       code,
       feedback,
       feedback_code,
+      feedback_at,
       accepted_at,
     } = await answer.update({
       feedback: req.body.feedback,
       feedback_code: req.body.code,
+      feedback_at: date,
       accepted_at: isAccepted,
     });
 
@@ -74,6 +78,7 @@ class FeedbackController {
       code,
       feedback,
       feedback_code,
+      feedback_at,
       accepted_at,
     });
   }

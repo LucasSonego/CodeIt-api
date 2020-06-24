@@ -7,6 +7,7 @@ class Answer extends Model {
         code: Sequelize.TEXT,
         feedback: Sequelize.TEXT,
         feedback_code: Sequelize.TEXT,
+        feedback_at: Sequelize.DATE,
         accepted_at: Sequelize.DATE,
       },
       {

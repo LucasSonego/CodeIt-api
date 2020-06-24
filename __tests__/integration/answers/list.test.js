@@ -114,6 +114,7 @@ describe("Testes listagem de respostas", () => {
     expect(response.body[0]).toHaveProperty("code");
     expect(response.body[0]).toHaveProperty("feedback");
     expect(response.body[0]).toHaveProperty("feedback_code");
+    expect(response.body[0]).toHaveProperty("feedback_at");
     expect(response.body[0]).toHaveProperty("accepted_at");
     expect(response.body[0]).toHaveProperty("student");
   });
