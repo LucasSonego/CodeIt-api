@@ -125,7 +125,14 @@ class AnswerController {
         {
           model: Answer,
           as: "answers",
-          attributes: ["code", "feedback", "feedback_code", "accepted_at"],
+          attributes: [
+            "code",
+            "feedback",
+            "feedback_code",
+            "feedback_at",
+            "accepted_at",
+            "updated_at",
+          ],
           include: [
             {
               model: User,

@@ -97,6 +97,7 @@ class TaskController {
               "feedback_code",
               "feedback_at",
               "accepted_at",
+              "updated_at",
             ],
           },
         ],
@@ -143,6 +144,7 @@ class TaskController {
                 "feedback_code",
                 "feedback_at",
                 "accepted_at",
+                "updated_at",
               ],
               include: [
                 {
@@ -179,6 +181,8 @@ class TaskController {
                 code: answer.code,
                 feedback: answer.feedback,
                 feedback_code: answer.feedback_code,
+                feedback_at: answer.feedback_at,
+                updated_at: answer.updated_at,
                 accepted_at: answer.accepted_at,
               },
             };
@@ -288,6 +292,7 @@ class TaskController {
                 "feedback_code",
                 "feedback_at",
                 "accepted_at",
+                "updated_at",
               ],
               required: false,
             },
