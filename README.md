@@ -676,7 +676,9 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
           "code": "function teste()",
           "feedback": null,
           "feedback_code": null,
-          "accepted_at": "2020-05-18T00:10:48.309Z"
+          "feedback_at": null,
+          "updated_at": "2020-05-18T00:10:48.309Z",
+          "accepted_at": "2020-05-18T00:10:48.309Z",
         }
       }
     ]
@@ -704,6 +706,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
             "code": "function test()",
             "feedback": null,
             "feedback_code": null,
+            "feedback_at": null,
             "created_at": "2020-05-17T22:22:18.801Z",
             "updated_at": "2020-05-18T00:10:48.310Z",
             "accepted_at": "2020-05-18T00:10:48.309Z",
@@ -718,6 +721,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
             "code": "function test()",
             "feedback": null,
             "feedback_code": null,
+            "feedback_at": null,
             "created_at": "2020-05-18T00:10:48.309Z",
             "updated_at": "2020-05-18T00:10:48.309Z",
             "accepted_at": null,
@@ -755,6 +759,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
             "code": "function test()",
             "feedback": null,
             "feedback_code": null,
+            "feedback_at": null,
             "created_at": "2020-06-18T17:02:17.238Z",
             "updated_at": "2020-06-19T20:56:18.500Z",
             "accepted_at": null,
@@ -827,6 +832,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
     "code": "function teste()",
     "feedback": null,
     "feedback_code": null,
+    "feedback_at": "2020-05-18T00:10:48.309Z",  
     "accepted_at": "2020-05-18T00:10:48.309Z"
   },
   "user_enrolled": true
@@ -960,7 +966,9 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
   "code": "function example()",
   "feedback": "Nice",
   "feedback_code": null,
+  "feedback_at": "2020-05-18T00:10:48.309Z",
   "accepted_at": "2020-05-18T00:10:48.309Z",
+  "updated_at": "2020-05-18T00:09:23.623Z",
   "student": {
     "id": "123456",
     "name": "Test User",

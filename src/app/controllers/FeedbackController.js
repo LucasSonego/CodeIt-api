@@ -66,12 +66,17 @@ class FeedbackController {
       feedback_code,
       feedback_at,
       accepted_at,
-    } = await answer.update({
-      feedback: req.body.feedback,
-      feedback_code: req.body.code,
-      feedback_at: date,
-      accepted_at: isAccepted,
-    });
+    } = await answer.update(
+      {
+        feedback: req.body.feedback,
+        feedback_code: req.body.code,
+        feedback_at: date,
+        accepted_at: isAccepted,
+      },
+      {
+        silent: true,
+      }
+    );
 
     return res.status(200).json({
       id,
