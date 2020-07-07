@@ -7,6 +7,7 @@ class Task extends Model {
         title: Sequelize.TEXT,
         description: Sequelize.TEXT,
         code: Sequelize.TEXT,
+        language: Sequelize.STRING,
       },
       {
         sequelize,

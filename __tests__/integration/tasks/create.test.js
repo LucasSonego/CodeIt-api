@@ -15,6 +15,7 @@ describe("Testes de criação de tarefas", () => {
     description:
       "Quem manda na minha terra sou euzis! Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Em pé sem cair, deitado sem dormir, sentado sem cochilar e fazendo pose.",
     code: "function sucoDeCevadiss(){}",
+    language: "javascript",
   };
 
   beforeAll(async () => {
@@ -76,6 +77,7 @@ describe("Testes de criação de tarefas", () => {
     expect(response.body.title).toBe(task.title);
     expect(response.body.description).toBe(task.description);
     expect(response.body.code).toBe(task.code);
+    expect(response.body.language).toBe(task.language);
   });
 
   test("Validação dos campos da requisição", async () => {

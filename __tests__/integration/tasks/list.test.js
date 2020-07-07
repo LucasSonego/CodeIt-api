@@ -19,6 +19,7 @@ describe("Testes de listagem de tarefas", () => {
     description:
       "Quem manda na minha terra sou euzis! Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis. Em pé sem cair, deitado sem dormir, sentado sem cochilar e fazendo pose.",
     code: "function sucoDeCevadiss(){}",
+    language: "javascript",
   };
   let task2;
 
@@ -128,11 +129,11 @@ describe("Testes de listagem de tarefas", () => {
       request(app)
         .post(`/answers/${task.id}`)
         .set("Authorization", "Bearer " + student1.token)
-        .send({ code: "function testing()" }),
+        .send({ code: "function testing()", language: "javascript" }),
       request(app)
         .post(`/answers/${task.id}`)
         .set("Authorization", "Bearer " + student2.token)
-        .send({ code: "function testing()" }),
+        .send({ code: "function testing()", language: "javascript" }),
     ]);
 
     await request(app)
@@ -190,6 +191,7 @@ describe("Testes de listagem de tarefas", () => {
     expect(response1.body.title).toBe(task.title);
     expect(response1.body.description).toBe(task.description);
     expect(response1.body.code).toBe(task.code);
+    expect(response1.body.language).toBe(task.language);
     expect(response1.body.discipline.id).toBe(discipline1.id);
     expect(response1.body.user_enrolled).toBe(true);
 
@@ -227,13 +229,22 @@ describe("Testes de listagem de tarefas", () => {
       .get("/tasks")
       .set("Authorization", "Bearer " + student1.token);
 
+    let discp1, discp2;
+    if (response.body[0].id === discipline1.id) {
+      discp1 = 0;
+      discp2 = 1;
+    } else {
+      discp1 = 1;
+      discp2 = 0;
+    }
+
     expect(response.body.length).toBe(2);
-    expect(response.body[0].id).toBe(discipline1.id);
-    expect(response.body[0].name).toBe(discipline1.name);
-    expect(response.body[0].tasks.length).toBe(2);
-    expect(response.body[1].tasks.length).toBe(1);
-    expect(response.body[1].id).toBe(discipline2.id);
-    expect(response.body[1].name).toBe(discipline2.name);
+    expect(response.body[discp1].id).toBe(discipline1.id);
+    expect(response.body[discp1].name).toBe(discipline1.name);
+    expect(response.body[discp1].tasks.length).toBe(2);
+    expect(response.body[discp2].tasks.length).toBe(1);
+    expect(response.body[discp2].id).toBe(discipline2.id);
+    expect(response.body[discp2].name).toBe(discipline2.name);
   });
 
   test("Listar todas as tarefas de todas disciplinas de um professor", async () => {
@@ -241,14 +252,31 @@ describe("Testes de listagem de tarefas", () => {
       .get("/tasks")
       .set("Authorization", "Bearer " + teacher.token);
 
+    let discp1, discp2;
+    if (response.body[0].id === discipline1.id) {
+      discp1 = 0;
+      discp2 = 1;
+    } else {
+      discp1 = 1;
+      discp2 = 0;
+    }
+
+    let task1index;
+    if (response.body[discp1].tasks[0].id === task.id) {
+      task1index = 0;
+    } else {
+      task1index = 1;
+    }
+
     expect(response.body.length).toBe(2);
-    expect(response.body[0].id).toBe(discipline1.id);
-    expect(response.body[0].name).toBe(discipline1.name);
-    expect(response.body[0].tasks.length).toBe(2);
-    expect(response.body[0].tasks[0].answers.length).toBe(2);
-    expect(response.body[1].id).toBe(discipline2.id);
-    expect(response.body[1].name).toBe(discipline2.name);
-    expect(response.body[1].tasks.length).toBe(1);
-    expect(response.body[1].tasks[0].answers.length).toBe(0);
+    expect(response.body[discp1].id).toBe(discipline1.id);
+    expect(response.body[discp1].name).toBe(discipline1.name);
+    expect(response.body[discp1].tasks.length).toBe(2);
+    expect(response.body[discp1].tasks[task1index].answers.length).toBe(2);
+
+    expect(response.body[discp2].id).toBe(discipline2.id);
+    expect(response.body[discp2].name).toBe(discipline2.name);
+    expect(response.body[discp2].tasks.length).toBe(1);
+    expect(response.body[discp2].tasks[0].answers.length).toBe(0);
   });
 });

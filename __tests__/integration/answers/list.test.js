@@ -19,6 +19,7 @@ describe("Testes listagem de respostas", () => {
 
   let answer = {
     code: "function testing()",
+    language: "javascript",
   };
 
   beforeAll(async () => {
