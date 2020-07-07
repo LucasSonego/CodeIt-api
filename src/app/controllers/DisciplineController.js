@@ -118,7 +118,14 @@ class DisciplineController {
             {
               model: Task,
               as: "tasks",
-              attributes: ["id", "title", "description", "code", "closed_at"],
+              attributes: [
+                "id",
+                "title",
+                "description",
+                "code",
+                "language",
+                "closed_at",
+              ],
             },
           ],
         });

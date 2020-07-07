@@ -18,6 +18,7 @@ describe("Testes de envio de feedback", () => {
   };
   let answer = {
     code: "function test()",
+    language: "javascript",
   };
 
   let feedback = {

@@ -10,6 +10,7 @@ class AnswerController {
   async store(req, res) {
     const schema = yup.object().shape({
       code: yup.string().required(),
+      language: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -20,7 +21,14 @@ class AnswerController {
 
     const [task, userEnrolled, alreadyAnswered] = await Promise.all([
       Task.findByPk(req.params.task, {
-        attributes: ["id", "title", "description", "code", "closed_at"],
+        attributes: [
+          "id",
+          "title",
+          "description",
+          "code",
+          "language",
+          "closed_at",
+        ],
       }),
       Enrollment.findOne({ where: { student_id: req.userId } }),
       Answer.findOne({
@@ -47,23 +55,32 @@ class AnswerController {
       });
     }
 
-    const { id, code } = await Answer.create({
+    if (task.language && task.language !== req.body.language) {
+      return res.status(400).json({
+        error: "A resposta deve ser escrita na linguagem definida na tarefa",
+      });
+    }
+
+    const { id, code, language } = await Answer.create({
       id: `${req.params.task}${req.userId}`,
       task_id: req.params.task,
       user_id: req.userId,
       code: req.body.code,
+      language: req.body.language,
     });
 
     return res.status(200).json({
       id,
       task,
       code,
+      language,
     });
   }
 
   async update(req, res) {
     const schema = yup.object().shape({
       code: yup.string().required(),
+      language: yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -74,12 +91,19 @@ class AnswerController {
 
     const answer = await Answer.findOne({
       where: { user_id: req.userId, task_id: req.params.task },
-      attributes: ["id", "code", "accepted_at"],
+      attributes: ["id", "code", "language", "accepted_at"],
       include: [
         {
           model: Task,
           as: "task",
-          attributes: ["id", "title", "description", "code", "closed_at"],
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "code",
+            "language",
+            "closed_at",
+          ],
         },
       ],
     });
@@ -96,12 +120,39 @@ class AnswerController {
       });
     }
 
-    await answer.update({ code: req.body.code });
+    if (
+      req.body.language &&
+      answer.task.language &&
+      answer.task.language !== req.body.language
+    ) {
+      return res.status(400).json({
+        error: "A resposta deve ser escrita na linguagem definida na tarefa",
+      });
+    }
+
+    let newAnswer = {};
+    if (req.body.code && req.body.language) {
+      newAnswer = {
+        code: req.body.code,
+        language: req.body.language,
+      };
+    } else {
+      newAnswer = {
+        code: req.body.code,
+      };
+    }
+
+    await answer.update(newAnswer);
+
+    let language = req.body.language
+      ? "" + req.body.language
+      : "" + answer.language;
 
     return res.json({
       id: answer.id,
       task: answer.task,
       code: req.body.code,
+      language,
     });
   }
 
@@ -127,6 +178,7 @@ class AnswerController {
           as: "answers",
           attributes: [
             "code",
+            "language",
             "feedback",
             "feedback_code",
             "feedback_at",

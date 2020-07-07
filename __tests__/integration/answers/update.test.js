@@ -15,10 +15,12 @@ describe("Testes de alteração de respostas", () => {
     description:
       "Suco de cevadiss, é um leite divinis, qui tem lupuliz, matis, aguis e fermentis.",
     code: "function sucoDeCevadiss(){}",
+    language: "javascript",
   };
 
   let answer = {
     code: "function testing()",
+    language: "javascript",
   };
 
   beforeAll(async () => {
@@ -100,6 +102,7 @@ describe("Testes de alteração de respostas", () => {
     expect(response.body.task.description).toBe(task.description);
     expect(response.body.task.code).toBe(task.code);
     expect(response.body.code).toBe("function updating()");
+    expect(response.body.language).toBe(answer.language);
   });
 
   test("Validação dos campos da requisição", async () => {
@@ -124,6 +127,22 @@ describe("Testes de alteração de respostas", () => {
     expect(response.status).toBe(404);
     expect(response.body.error).toBe(
       "Não há uma resposta sua para esta tarefa"
+    );
+  });
+
+  test("Verificar se é possivel alterar a linguagem", async () => {
+    const response = await request(app)
+      .put(`/answers/${task.id}`)
+      .set("Authorization", "Bearer " + student.token)
+      .send({
+        code: "public static final void wtf(){}",
+        language: "java",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body).toHaveProperty("error");
+    expect(response.body.error).toBe(
+      "A resposta deve ser escrita na linguagem definida na tarefa"
     );
   });
 

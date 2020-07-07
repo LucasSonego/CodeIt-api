@@ -62,6 +62,7 @@ class FeedbackController {
     const {
       id,
       code,
+      language,
       feedback,
       feedback_code,
       feedback_at,
@@ -81,6 +82,7 @@ class FeedbackController {
     return res.status(200).json({
       id,
       code,
+      language,
       feedback,
       feedback_code,
       feedback_at,
