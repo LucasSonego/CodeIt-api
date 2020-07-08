@@ -550,7 +550,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 {
     "title": "Task 1",
     "description": "Description for task 1",
-    "code": "function example()"
+    "code": "function example()",
+    "language": "javascript"
 }
 ```
 
@@ -559,6 +560,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 | title       | String       | -          | sim         |
 | description | String       | -          | sim         |
 | code        | String       | -          | não         |
+| language    | String       | -          | não         |
 
 
 
@@ -578,7 +580,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   },
   "title": "Task 1",
   "description": "Description for task 1",
-  "code": "function example()"
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -594,9 +597,10 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 ```json
 {
-    "title": "Task 1",
-    "description": "Description for task 1",
-    "code": "function example()"
+  "title": "Task 1",
+  "description": "Description for task 1",
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -605,6 +609,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 | title       | String       | -          | não         |
 | description | String       | -          | não         |
 | code        | String       | -          | não         |
+| language    | String       | -          | não         |
 
 
 
@@ -624,7 +629,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   },
   "title": "Task 1",
   "description": "Description for task 1",
-  "code": "function example()"
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -649,6 +655,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": null,
         "answer": null
       }
@@ -663,6 +670,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": null,
         "answer": null
       },
@@ -671,9 +679,11 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": "2020-05-20T18:02:35.757Z",
         "answer": {
           "code": "function teste()",
+          "language": "javascript",
           "feedback": null,
           "feedback_code": null,
           "feedback_at": null,
@@ -699,11 +709,13 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Task 1",
         "description": "Task 1 desctiption",
         "code": "function teste(){}",
+        "language": "javascript",
         "created_at": "2020-05-17T22:20:50.982Z",
         "answers": [
           {
             "id": "TD1di5mxL123456",
             "code": "function test()",
+            "language": "javascript",
             "feedback": null,
             "feedback_code": null,
             "feedback_at": null,
@@ -719,6 +731,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
           {
             "id": "TD1di5mxL112233",
             "code": "function test()",
+            "language": "javascript",
             "feedback": null,
             "feedback_code": null,
             "feedback_at": null,
@@ -738,6 +751,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Task 2",
         "description": "Task 2 description",
         "code": "function test(){}",
+        "language": "javascript",
         "created_at": "2020-05-19T01:44:06.797Z",
         "answers": []
       }
@@ -752,11 +766,13 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
         "title": "Tarefa respondida",
         "description": "tarefa respondida",
         "code": null,
+        "language": null,
         "created_at": "2020-05-19T23:05:16.038Z",
         "answers": [
           {
             "id": "TD2Mzc2NT123456",
             "code": "function test()",
+            "language": "javascript",
             "feedback": null,
             "feedback_code": null,
             "feedback_at": null,
@@ -792,6 +808,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
       "title": "Teste",
       "description": "Mussum Ipsum, cacilds vidis litro abertis.",
       "code": "function teste(){}",
+      "language": "javascript",
       "closed_at": null
     }
   ],
@@ -801,6 +818,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
       "title": "Teste",
       "description": "Mussum Ipsum, cacilds vidis litro abertis.",
       "code": "function teste(){}",
+      "language": "javascript",
       "closed_at": "2020-05-20T18:02:35.757Z"
     }
   ]
@@ -817,6 +835,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
   "title": "Teste",
   "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
   "code": "function teste(){}",
+  "language": "javascript",
   "closed_at": null,
   "discipline": {
     "id": "2020D1",
@@ -830,6 +849,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=20
   "answer": {
     "id": "2020D1JwqUcr123456",
     "code": "function teste()",
+    "language": "javascript",
     "feedback": null,
     "feedback_code": null,
     "feedback_at": "2020-05-18T00:10:48.309Z",  
@@ -964,6 +984,7 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
 ```json
 {
   "code": "function example()",
+  "language": "javascript",
   "feedback": "Nice",
   "feedback_code": null,
   "feedback_at": "2020-05-18T00:10:48.309Z",
