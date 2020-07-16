@@ -94,7 +94,7 @@ describe("Testes de remoção de disciplina", () => {
     expect(response.status).toBe(200);
   });
 
-  test("Validação de permissão para deletar disciplna", async () => {
+  test("Validação de permissão para deletar disciplina", async () => {
     const response = await request(app)
       .delete(`/disciplines/${discipline2.id}`)
       .set("Authorization", "Bearer " + teacher2.token);

@@ -224,7 +224,7 @@ describe("Testes de listagem de tarefas", () => {
     expect(response2.body).not.toHaveProperty("answer");
   });
 
-  test("Listar todas as tarefas das disciplinas que um usuario está matriculado", async () => {
+  test("Listar todas as tarefas das disciplinas que um usuário está matriculado", async () => {
     const response = await request(app)
       .get("/tasks")
       .set("Authorization", "Bearer " + student1.token);

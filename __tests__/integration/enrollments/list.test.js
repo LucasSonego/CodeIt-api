@@ -71,7 +71,7 @@ describe("Testes de listagem de estudantes matriculados em uma disciplina", () =
     expect(response.body.enrollments[0].student.email).toBe(student.email);
   });
 
-  test("Validação de existencia da disciplina buscada", async () => {
+  test("Validação de existência da disciplina buscada", async () => {
     const response = await request(app)
       .get("/disciplines")
       .set("Authorization", "Bearer " + teacher.token)

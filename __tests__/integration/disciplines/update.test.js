@@ -122,7 +122,7 @@ describe("Testes de alteração de dados de disciplina", () => {
     expect(response.body.teacher.id).toBe(teacher2.id);
   });
 
-  test("Validação de tipo de usuario ao transferir disciplina para outro professor", async () => {
+  test("Validação de tipo de usuário ao transferir disciplina para outro professor", async () => {
     const response = await request(app)
       .put(`/disciplines/${discipline.id}`)
       .set("Authorization", "Bearer " + teacher2.token)

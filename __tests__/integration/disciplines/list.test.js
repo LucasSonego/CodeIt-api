@@ -85,7 +85,7 @@ describe("Testes de busca e listagem de disciplinas", () => {
       .set("Authorization", "Bearer " + student.token);
   });
 
-  test("Listar todas as disciplinas que o usuario está matriculado e as outras disciplinas", async () => {
+  test("Listar todas as disciplinas que o usuário está matriculado e as outras disciplinas", async () => {
     const response = await request(app)
       .get("/disciplines")
       .set("Authorization", "Bearer " + student.token);

@@ -68,7 +68,7 @@ describe("Testes de listagem de estudantes matriculados em uma disciplina", () =
     expect(response.body.message).toBe("Matrícula removida");
   });
 
-  test("Validação de existencia da matricula a ser removida", async () => {
+  test("Validação de existência da matricula a ser removida", async () => {
     const response = await request(app)
       .delete("/enrollments/~invalid discipline~")
       .set("Authorization", "Bearer " + teacher.token);

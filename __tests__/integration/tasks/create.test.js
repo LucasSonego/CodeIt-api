@@ -98,7 +98,7 @@ describe("Testes de criação de tarefas", () => {
     );
   });
 
-  test("Validação de disiplina", async () => {
+  test("Validação de disciplina", async () => {
     const response = await request(app)
       .post(`/tasks/~invalid~`)
       .set("Authorization", "Bearer " + teacher1.token)

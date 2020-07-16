@@ -4,7 +4,7 @@ import factory from "../../factories";
 
 import truncate from "../../util/truncate";
 
-describe("Testes de listagem de usuarios", () => {
+describe("Testes de listagem de usuários", () => {
   let token;
 
   beforeAll(async () => {
@@ -28,7 +28,7 @@ describe("Testes de listagem de usuarios", () => {
     token = response.body.token;
   });
 
-  test("Listar todos os usuarios", async () => {
+  test("Listar todos os usuários", async () => {
     const response = await request(app)
       .get("/users")
       .set("Authorization", "Bearer " + token);
@@ -58,6 +58,6 @@ describe("Testes de listagem de usuarios", () => {
   test("Validação de autenticação", async () => {
     const response = await request(app).get("/users");
 
-    expect(response.body.error).toBe("Autenticação necessaria");
+    expect(response.body.error).toBe("Autenticação necessária");
   });
 });

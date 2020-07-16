@@ -130,7 +130,7 @@ describe("Testes de alteração de respostas", () => {
     );
   });
 
-  test("Verificar se é possivel alterar a linguagem", async () => {
+  test("Verificar se é possível alterar a linguagem", async () => {
     const response = await request(app)
       .put(`/answers/${task.id}`)
       .set("Authorization", "Bearer " + student.token)

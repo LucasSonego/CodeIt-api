@@ -51,7 +51,7 @@ class FeedbackController {
     if (answer.task.discipline.teacher.id !== req.userId) {
       return res.status(403).json({
         error:
-          "Você não tem premissão para dar feedback para as tarefas desta disciplina",
+          "Você não tem permissão para dar feedback para as tarefas desta disciplina",
       });
     }
 
