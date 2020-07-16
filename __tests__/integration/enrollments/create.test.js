@@ -4,7 +4,7 @@ import app from "../../../src/app";
 import factory from "../../factories";
 import truncate from "../../util/truncate";
 
-describe("Testes de matriculas/incrições", () => {
+describe("Testes de matriculas/inscrições", () => {
   let teacher, student;
   let discipline = {
     id: "2020DEE123",

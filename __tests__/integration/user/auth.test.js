@@ -60,6 +60,6 @@ describe("Testes de validação de autenticação", () => {
   test("Validação de autenticação (sem token)", async () => {
     const response = await request(app).get("/sessions");
 
-    expect(response.body.error).toBe("Autenticação necessaria");
+    expect(response.body.error).toBe("Autenticação necessária");
   });
 });

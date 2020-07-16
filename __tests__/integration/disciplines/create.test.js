@@ -75,7 +75,7 @@ describe("Testes na criação disciplinas", () => {
     );
   });
 
-  test("Validação de tipo de usuario", async () => {
+  test("Validação de tipo de usuário", async () => {
     const response = await request(app)
       .post("/disciplines")
       .set("Authorization", "Bearer " + student.token)
