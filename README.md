@@ -28,6 +28,8 @@
   - [Buscar](#Buscar-resposta)
 - [Feedback](#Feedback)
   - [Enviar](#Enviar-feedback)
+  - [Listar](#Listar-respostas-com-feedback)
+  
 
 ## Usuários
 
@@ -1036,5 +1038,43 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   "feedback_code": "function someCode()",
   "accepted_at": "2020-05-18T00:10:48.309Z"
 }
+```
+
+
+
+### Listar respostas com feedback
+
+#### Requisição
+
+Método: `GET`<br>Rota: `/feedback`
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante.
+
+#### Corpo da resposta
+
+```json
+[
+  {
+    "code": "function teste()",
+    "language": "javascript",
+    "feedback": "All ok",
+    "feedback_code": null,
+    "feedback_at": "2020-06-24T20:43:14.510Z",
+    "accepted_at": "2020-06-24T20:43:14.510Z",
+    "updated_at": "2020-05-11T00:06:07.775Z",
+    "task": {
+      "id": "TD1di5mxL",
+      "title": "Teste",
+      "description": "",
+      "code": "function test(){}",
+      "language": null,
+      "closed_at": null,
+      "discipline": {
+        "id": "TD1",
+        "name": "Test discipline 1"
+      }
+    }
+  }
+]
 ```
 
