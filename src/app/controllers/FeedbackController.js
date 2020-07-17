@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import { Op as is } from "sequelize";
 import Answer from "../models/Answer";
 import Task from "../models/Task";
 import Discipline from "../models/Discipline";
@@ -88,6 +89,44 @@ class FeedbackController {
       feedback_at,
       accepted_at,
     });
+  }
+
+  async index(req, res) {
+    const feedbacks = await Answer.findAll({
+      where: { user_id: req.userId, feedback_at: { [is.not]: null } },
+      attributes: [
+        "code",
+        "language",
+        "feedback",
+        "feedback_code",
+        "feedback_at",
+        "accepted_at",
+        "updated_at",
+      ],
+      include: [
+        {
+          model: Task,
+          as: "task",
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "code",
+            "language",
+            "closed_at",
+          ],
+          include: [
+            {
+              model: Discipline,
+              as: "discipline",
+              attributes: ["id", "name"],
+            },
+          ],
+        },
+      ],
+    });
+
+    return res.status(200).json(feedbacks);
   }
 }
 

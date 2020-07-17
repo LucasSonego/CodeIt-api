@@ -44,5 +44,6 @@ routes.put("/answers/:task", AnswerController.update);
 routes.get("/answers/:task", AnswerController.index);
 
 routes.put("/feedback/:answer", FeedbackController.store);
+routes.get("/feedback", FeedbackController.index);
 
 export default routes;
