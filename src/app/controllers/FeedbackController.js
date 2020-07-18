@@ -95,6 +95,7 @@ class FeedbackController {
     const feedbacks = await Answer.findAll({
       where: { user_id: req.userId, feedback_at: { [is.not]: null } },
       attributes: [
+        "id",
         "code",
         "language",
         "feedback",
