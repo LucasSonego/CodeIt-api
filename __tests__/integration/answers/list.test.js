@@ -100,10 +100,12 @@ describe("Testes listagem de respostas", () => {
 
     task = { ...task, id: taskResponse.body.id };
 
-    await request(app)
+    const answerResponse = await request(app)
       .post(`/answers/${task.id}`)
       .set("Authorization", "Bearer " + student1.token)
       .send(answer);
+
+    answer = { ...answer, id: answerResponse.body.id };
   });
 
   test("Listar todas as respostas de uma tarefa (professor)", async () => {
@@ -153,5 +155,49 @@ describe("Testes listagem de respostas", () => {
     expect(response.body.error).toBe(
       "Você não enviou uma resposta para esta tarefa"
     );
+  });
+
+  test("Buscar resposta por id", async () => {
+    const response = await request(app)
+      .get(`/answers`)
+      .query({ id: answer.id })
+      .set("Authorization", "Bearer " + teacher.token);
+
+    expect(response.body.code).toBe(answer.code);
+    expect(response.body.language).toBe(answer.language);
+    expect(response.body.task.id).toBe(task.id);
+    expect(response.body.task.title).toBe(task.title);
+    expect(response.body.task.description).toBe(task.description);
+    expect(response.body.task.code).toBe(task.code);
+    expect(response.body.task.discipline.id).toBe(discipline.id);
+    expect(response.body.task.discipline.name).toBe(discipline.name);
+    expect(response.body.task.discipline.teacher.id).toBe(teacher.id);
+    expect(response.body.task.discipline.teacher.name).toBe(teacher.name);
+    expect(response.body.task.discipline.teacher.email).toBe(teacher.email);
+    expect(response.body.student.id).toBe(student1.id);
+    expect(response.body.student.name).toBe(student1.name);
+    expect(response.body.student.email).toBe(student1.email);
+  });
+
+  test("Validar se o usuário pode ver a resposta buscada", async () => {
+    const response = await request(app)
+      .get(`/answers`)
+      .query({ id: answer.id })
+      .set("Authorization", "Bearer " + student2.token);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe(
+      "A resposta so pode ser vista por seu autor e pelo professor que criou a tarefa"
+    );
+  });
+
+  test("Verificar se a resposta buscada existe", async () => {
+    const response = await request(app)
+      .get(`/answers`)
+      .query({ id: "~invalid~" })
+      .set("Authorization", "Bearer " + student2.token);
+
+    expect(response.status).toBe(404);
+    expect(response.body.error).toBe("Não há nenhuma reposta com este ID");
   });
 });
