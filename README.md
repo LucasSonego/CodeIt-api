@@ -975,7 +975,7 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
 
 ### Buscar resposta
 
-#### Corpo da requisição
+#### Corpo da requisição (busca por meio do _id_ da tarefa)
 
 Método: `GET`<br>Rota: `/answers/2020D1JwqUcr` _*id da tarefa_
 
@@ -999,6 +999,54 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
   }
 }
 ```
+
+
+
+#### Corpo da requisição (busca por meio do _id_ da resposta)
+
+Método: `GET`<br>Rota: `/answers`<br>Query params: `id: TD2-5123456 `  _*id da resposta_
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante matriculadona disciplina em que a tarefa foi criada
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "TD2-5123456",
+  "code": "function teste(parametro) {\n  if (parametro === \"teste\") {\n    console.log(\"teste\");\n  }\n}\n\nteste(\"teste\");",
+  "language": "javascript",
+  "feedback": null,
+  "feedback_code": null,
+  "feedback_at": null,
+  "created_at": "2020-06-18T17:02:17.238Z",
+  "updated_at": "2020-06-19T20:56:18.500Z",
+  "accepted_at": null,
+  "task": {
+    "id": "TD2-5",
+    "title": "Tarefa teste 5",
+    "description": "tarefa teste 5",
+    "code": "function teste()",
+    "language": null,
+    "closed_at": "2020-06-29T19:09:52.880Z",
+    "discipline": {
+      "id": "TD2",
+      "name": "Testes de Tarefas",
+      "teacher": {
+        "id": "654321",
+        "name": "Test Teacher",
+        "email": "testteacher@ufpr.br"
+      }
+    }
+  },
+  "student": {
+    "id": "123456",
+    "name": "Test User",
+    "email": "testuser@ufpr.br"
+  }
+}
+```
+
+
 
 
 

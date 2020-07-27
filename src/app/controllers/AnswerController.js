@@ -157,6 +157,72 @@ class AnswerController {
   }
 
   async index(req, res) {
+    if (req.query.id) {
+      const answer = await Answer.findByPk(req.query.id, {
+        attributes: [
+          "id",
+          "code",
+          "language",
+          "feedback",
+          "feedback_code",
+          "feedback_at",
+          "feedback_at",
+          "created_at",
+          "updated_at",
+          "accepted_at",
+        ],
+        include: [
+          {
+            model: Task,
+            as: "task",
+            attributes: [
+              "id",
+              "title",
+              "description",
+              "code",
+              "language",
+              "closed_at",
+            ],
+            paranoid: false,
+            include: [
+              {
+                model: Discipline,
+                as: "discipline",
+                attributes: ["id", "name"],
+                paranoid: false,
+                include: [
+                  {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["id", "name", "email"],
+                  },
+                ],
+              },
+            ],
+          },
+          { model: User, as: "student", attributes: ["id", "name", "email"] },
+        ],
+      });
+
+      if (!answer) {
+        return res.status(404).json({
+          error: "Não há nenhuma reposta com este ID",
+        });
+      }
+
+      if (
+        answer.task.discipline.teacher.id !== req.userId &&
+        answer.student.id !== req.userId
+      ) {
+        return res.status(401).json({
+          error:
+            "A resposta so pode ser vista por seu autor e pelo professor que criou a tarefa",
+        });
+      }
+
+      return res.json(answer);
+    }
+
     const task = await Task.findByPk(req.params.task, {
       attributes: ["id"],
       include: [
