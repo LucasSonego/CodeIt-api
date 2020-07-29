@@ -8,8 +8,8 @@ import User from "../models/User";
 class FeedbackController {
   async store(req, res) {
     const schema = yup.object().shape({
-      feedback: yup.string(),
-      code: yup.string(),
+      feedback: yup.string().nullable(),
+      code: yup.string().nullable(),
       accepted: yup.boolean(),
     });
 
