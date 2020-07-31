@@ -1096,14 +1096,17 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 Método: `GET`<br>Rota: `/feedback`
 
-O cabeçalho da requisição deve conter o token de autenticação de um estudante.
+O cabeçalho da requisição deve conter um token de autenticação.
 
-#### Corpo da resposta
+#### Corpo da resposta (para um estudante)
+
+(Lista os feedbacks de todas as respostas enviadas pelo estudante)
 
 ```json
 [
   {
-    "code": "function teste()",
+    "id":"TD1di5mxL123456",
+    "code": "function answer()",
     "language": "javascript",
     "feedback": "All ok",
     "feedback_code": null,
@@ -1112,8 +1115,8 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
     "updated_at": "2020-05-11T00:06:07.775Z",
     "task": {
       "id": "TD1di5mxL",
-      "title": "Teste",
-      "description": "",
+      "title": "Test",
+      "description": "test",
       "code": "function test(){}",
       "language": null,
       "closed_at": null,
@@ -1124,5 +1127,41 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
     }
   }
 ]
+```
+
+#### Corpo da resposta (para um professor)
+
+(Lista todos os feedbacks enviados por esse professor)
+
+```json
+[
+  {
+    id: "TD1di5mxL123456",
+    code: "function answer()",
+    language: "javascript",
+    feedback: "All ok",
+    feedback_code: null,
+    feedback_at: "2020-06-24T20:43:14.510Z",
+    accepted_at: "2020-06-24T20:43:14.510Z",
+    updated_at: "2020-05-11T00:06:07.775Z",
+    student: {
+      id: "123456",
+      name: "Test User",
+      email: "testuser@ufpr.br"
+    },
+    task: {
+      id: "TD1di5mxL",
+      title: "Test",
+      description: "test",
+      code: "function test(){}",
+      language: null,
+      closed_at: null,
+      discipline: {
+        id: "TD1",
+        name: "Test Discipline 1"
+      }
+    }
+  }
+];
 ```
 
