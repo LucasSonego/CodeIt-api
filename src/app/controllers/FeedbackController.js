@@ -92,6 +92,53 @@ class FeedbackController {
   }
 
   async index(req, res) {
+    const user = await User.findByPk(req.userId);
+
+    if (user.is_teacher) {
+      const feedbacks = await Answer.findAll({
+        where: { feedback_at: { [is.not]: null } },
+        attributes: [
+          "id",
+          "code",
+          "language",
+          "feedback",
+          "feedback_code",
+          "feedback_at",
+          "accepted_at",
+          "updated_at",
+        ],
+        include: [
+          {
+            model: User,
+            as: "student",
+            attributes: ["id", "name", "email"],
+          },
+          {
+            model: Task,
+            as: "task",
+            attributes: [
+              "id",
+              "title",
+              "description",
+              "code",
+              "language",
+              "closed_at",
+            ],
+            include: [
+              {
+                model: Discipline,
+                as: "discipline",
+                where: { teacher_id: req.userId },
+                attributes: ["id", "name"],
+              },
+            ],
+          },
+        ],
+      });
+
+      return res.json(feedbacks);
+    }
+
     const feedbacks = await Answer.findAll({
       where: { user_id: req.userId, feedback_at: { [is.not]: null } },
       attributes: [

@@ -120,4 +120,32 @@ describe("Testes de listagem de feedbacks", () => {
     expect(response.body[0].task.discipline.id).toBe(discipline.id);
     expect(response.body[0].task.discipline.name).toBe(discipline.name);
   });
+
+  test("Listar todos os feedbacks enviados por um professor", async () => {
+    const response = await request(app)
+      .get("/feedback")
+      .set("Authorization", "Bearer " + teacher.token);
+
+    expect(response.status).toBe(200);
+    expect(response.body[0].code).toBe(answer.code);
+    expect(response.body[0].language).toBe(answer.language);
+    expect(response.body[0].feedback_code).toBe(feedback.code);
+    expect(response.body[0]).toHaveProperty("feedback_at");
+    expect(response.body[0]).toHaveProperty("updated_at");
+    expect(response.body[0]).toHaveProperty("feedback_at");
+    expect(response.body[0].accepted_at).not.toBe(null);
+    expect(response.body[0]).toHaveProperty("task");
+    expect(response.body[0].task.id).toBe(task.id);
+    expect(response.body[0].task.title).toBe(task.title);
+    expect(response.body[0].task.description).toBe(task.description);
+    expect(response.body[0].task.code).toBe(task.code);
+    expect(response.body[0].task.id).toBe(task.id);
+    expect(response.body[0].task.id).toBe(task.id);
+    expect(response.body[0].task).toHaveProperty("discipline");
+    expect(response.body[0].task.discipline.id).toBe(discipline.id);
+    expect(response.body[0].task.discipline.name).toBe(discipline.name);
+    expect(response.body[0].student.id).toBe(student.id);
+    expect(response.body[0].student.name).toBe(student.name);
+    expect(response.body[0].student.email).toBe(student.email);
+  });
 });
