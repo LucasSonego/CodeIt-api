@@ -107,6 +107,7 @@ class FeedbackController {
           "accepted_at",
           "updated_at",
         ],
+        paranoid: false,
         include: [
           {
             model: User,
@@ -130,6 +131,7 @@ class FeedbackController {
                 as: "discipline",
                 where: { teacher_id: req.userId },
                 attributes: ["id", "name"],
+                paranoid: false,
               },
             ],
           },
