@@ -125,6 +125,7 @@ class FeedbackController {
               "language",
               "closed_at",
             ],
+            paranoid: false,
             include: [
               {
                 model: Discipline,
