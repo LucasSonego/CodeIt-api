@@ -5,8 +5,10 @@ class Answer extends Model {
     super.init(
       {
         code: Sequelize.TEXT,
+        language: Sequelize.STRING,
         feedback: Sequelize.TEXT,
         feedback_code: Sequelize.TEXT,
+        feedback_at: Sequelize.DATE,
         accepted_at: Sequelize.DATE,
       },
       {

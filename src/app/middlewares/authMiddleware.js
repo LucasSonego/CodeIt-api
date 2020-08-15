@@ -8,7 +8,7 @@ export default async (req, res, next) => {
 
   if (!authHeader) {
     return res.status(401).json({
-      error: "Autenticação necessaria",
+      error: "Autenticação necessária",
     });
   }
 

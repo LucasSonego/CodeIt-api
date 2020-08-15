@@ -42,7 +42,9 @@ routes.get("/tasks", TaskController.index);
 routes.post("/answers/:task", AnswerController.store);
 routes.put("/answers/:task", AnswerController.update);
 routes.get("/answers/:task", AnswerController.index);
+routes.get("/answers", AnswerController.index);
 
 routes.put("/feedback/:answer", FeedbackController.store);
+routes.get("/feedback", FeedbackController.index);
 
 export default routes;

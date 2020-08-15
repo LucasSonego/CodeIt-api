@@ -34,7 +34,7 @@ describe("Testes de Login e Autenticação", () => {
     expect(response.body).toHaveProperty("token");
   });
 
-  test("Tentar logar com dados invalidos", async () => {
+  test("Tentar logar com dados inválidos", async () => {
     const { email } = userData;
     const response = await request(app)
       .post("/sessions")
@@ -43,7 +43,7 @@ describe("Testes de Login e Autenticação", () => {
         password: "~senha incorreta~",
       });
 
-    expect(response.body.error).toBe("Usuario ou senha inválidos");
+    expect(response.body.error).toBe("Usuário ou senha inválidos");
   });
 
   test("Validação dos campos da requisição", async () => {

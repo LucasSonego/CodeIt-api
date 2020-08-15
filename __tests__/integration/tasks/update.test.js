@@ -83,6 +83,33 @@ describe("Testes de alteração de tarefas", () => {
     expect(response.body.title).toBe("Update test");
     expect(response.body.description).toBe(task.description);
     expect(response.body.code).toBe(task.code);
+    expect(response.body.language).toBe(null);
+  });
+
+  test("Validação dos campos da requisição", async () => {
+    const response = await request(app)
+      .put(`/tasks/${task.id}`)
+      .set("Authorization", "Bearer " + teacher1.token)
+      .send({
+        title: task.title,
+        description: null,
+        code: task.code,
+        language: task.language,
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "Um ou mais campos não foram preenchidos corretamente"
+    );
+  });
+
+  test("Verificar se há algo a ser alterado", async () => {
+    const response = await request(app)
+      .put(`/tasks/${task.id}`)
+      .set("Authorization", "Bearer " + teacher1.token)
+      .send({ anything: "asdadsa" });
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe("Não há nada a ser alterado");
   });
 
   test("Validação de tarefa", async () => {

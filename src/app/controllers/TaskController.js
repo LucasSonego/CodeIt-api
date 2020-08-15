@@ -12,7 +12,8 @@ class TaskController {
     const schema = yup.object().shape({
       title: yup.string().required(),
       description: yup.string().required(),
-      code: yup.string(),
+      code: yup.string().nullable(),
+      language: yup.string().nullable(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -51,12 +52,13 @@ class TaskController {
       validId = !(await Task.findByPk(taskId, { paranoid: false }));
     }
 
-    const { id, title, description, code } = await Task.create({
+    const { id, title, description, code, language } = await Task.create({
       id: taskId,
       discipline_id: discipline.id,
       title: req.body.title,
       description: req.body.description,
       code: req.body.code,
+      language: req.body.language,
     });
 
     return res.json({
@@ -65,16 +67,90 @@ class TaskController {
       title,
       description,
       code,
+      language,
     });
   }
 
   async index(req, res) {
+    if (req.query.id) {
+      const task = await Task.findByPk(req.query.id, {
+        attributes: [
+          "id",
+          "title",
+          "description",
+          "code",
+          "language",
+          "closed_at",
+        ],
+        include: [
+          {
+            model: Discipline,
+            as: "discipline",
+            attributes: ["id", "name"],
+            include: [
+              {
+                model: User,
+                as: "teacher",
+                attributes: ["id", "name", "email"],
+              },
+            ],
+          },
+          {
+            model: Answer,
+            as: "answers",
+            where: { user_id: req.userId },
+            required: false,
+            attributes: [
+              "id",
+              "code",
+              "language",
+              "feedback",
+              "feedback_code",
+              "feedback_at",
+              "accepted_at",
+              "updated_at",
+            ],
+          },
+        ],
+        paranoid: false,
+      });
+
+      if (!task) {
+        return res.status(404).json({
+          error: "Não há nenhuma tarefa com este ID",
+        });
+      }
+
+      const user_enrolled = await Enrollment.findOne({
+        where: { student_id: req.userId, discipline_id: task.discipline.id },
+      });
+
+      return res.json({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        code: task.code,
+        language: task.language,
+        closed_at: task.closed_at,
+        discipline: task.discipline,
+        answer: task.answers[0],
+        user_enrolled: !!user_enrolled,
+      });
+    }
+
     if (req.query.discipline) {
       const [discipline, tasks] = await Promise.all([
         Discipline.findByPk(req.query.discipline),
         Task.findAll({
           where: { discipline_id: req.query.discipline },
-          attributes: ["id", "title", "description", "code", "closed_at"],
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "code",
+            "language",
+            "closed_at",
+          ],
           paranoid: false,
           include: [
             {
@@ -83,9 +159,12 @@ class TaskController {
               attributes: [
                 "id",
                 "code",
+                "language",
                 "feedback",
                 "feedback_code",
+                "feedback_at",
                 "accepted_at",
+                "updated_at",
               ],
               include: [
                 {
@@ -117,11 +196,15 @@ class TaskController {
               title: task.title,
               description: task.description,
               code: task.code,
+              language: task.language,
               closed_at: task.closed_at,
               answer: {
                 code: answer.code,
+                language: answer.language,
                 feedback: answer.feedback,
                 feedback_code: answer.feedback_code,
+                feedback_at: answer.feedback_at,
+                updated_at: answer.updated_at,
                 accepted_at: answer.accepted_at,
               },
             };
@@ -131,6 +214,7 @@ class TaskController {
             title: task.title,
             description: task.description,
             code: task.code,
+            language: task.language,
             closed_at: task.closed_at,
           };
         });
@@ -152,6 +236,61 @@ class TaskController {
       });
     }
 
+    const userData = await User.findByPk(req.userId, {
+      attributes: ["is_teacher"],
+    });
+
+    if (userData.is_teacher) {
+      const response = await Discipline.findAll({
+        where: { teacher_id: req.userId },
+        attributes: ["id", "name"],
+        include: [
+          {
+            model: Task,
+            as: "tasks",
+            attributes: [
+              "id",
+              "title",
+              "description",
+              "code",
+              "language",
+              "created_at",
+              "closed_at",
+            ],
+            paranoid: false,
+            include: [
+              {
+                model: Answer,
+                as: "answers",
+                attributes: [
+                  "id",
+                  "code",
+                  "language",
+                  "feedback",
+                  "feedback_code",
+                  "feedback_at",
+                  "created_at",
+                  "updated_at",
+                  "accepted_at",
+                ],
+                include: [
+                  {
+                    model: User,
+                    as: "student",
+                    attributes: ["id", "name", "email"],
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      });
+
+      if (response) {
+        return res.json(response);
+      }
+    }
+
     const data = await Discipline.findAll({
       attributes: ["id", "name"],
       include: [
@@ -165,14 +304,29 @@ class TaskController {
         {
           model: Task,
           as: "tasks",
-          attributes: ["id", "title", "description", "code", "closed_at"],
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "code",
+            "language",
+            "closed_at",
+          ],
           paranoid: false,
           include: [
             {
               model: Answer,
               as: "answers",
               where: { user_id: req.userId },
-              attributes: ["code", "feedback", "feedback_code", "accepted_at"],
+              attributes: [
+                "code",
+                "language",
+                "feedback",
+                "feedback_code",
+                "feedback_at",
+                "accepted_at",
+                "updated_at",
+              ],
               required: false,
             },
           ],
@@ -188,6 +342,7 @@ class TaskController {
           title: task.title,
           description: task.description,
           code: task.code,
+          language: task.language,
           closed_at: task.closed_at,
           answer,
         };
@@ -207,7 +362,8 @@ class TaskController {
     const schema = yup.object().shape({
       title: yup.string(),
       description: yup.string(),
-      code: yup.string(),
+      code: yup.string().nullable(),
+      language: yup.string().nullable(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -216,7 +372,12 @@ class TaskController {
       });
     }
 
-    if (!req.body.title && !req.body.description && !req.body.code) {
+    if (
+      !req.body.title &&
+      !req.body.description &&
+      !req.body.code &&
+      req.body.language === undefined
+    ) {
       return res.status(400).json({
         error: "Não há nada a ser alterado",
       });
@@ -237,6 +398,7 @@ class TaskController {
           ],
         },
       ],
+      paranoid: false,
     });
 
     if (!task) {
@@ -257,6 +419,8 @@ class TaskController {
     req.body.description &&
       (updatedTask = { ...updatedTask, description: req.body.description });
     req.body.code && (updatedTask = { ...updatedTask, code: req.body.code });
+    req.body.language !== undefined &&
+      (updatedTask = { ...updatedTask, language: req.body.language });
 
     let response = await task.update(updatedTask);
 
@@ -266,6 +430,7 @@ class TaskController {
       title: response.title,
       description: response.description,
       code: response.code,
+      language: response.language,
     });
   }
 

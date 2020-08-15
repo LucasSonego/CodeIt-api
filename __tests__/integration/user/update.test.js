@@ -4,7 +4,7 @@ import factory from "../../factories";
 
 import truncate from "../../util/truncate";
 
-describe("Testes de update de informaçẽos do usuario", () => {
+describe("Testes de update de informações do usuário", () => {
   let userData, user, token;
 
   beforeAll(async () => {
@@ -12,24 +12,20 @@ describe("Testes de update de informaçẽos do usuario", () => {
 
     userData = await factory.attrs("User");
 
-    const response = await request(app)
-      .post("/users")
-      .send(userData);
+    const response = await request(app).post("/users").send(userData);
 
     user = response.body;
 
     const { email, password } = userData;
-    const loginResponse = await request(app)
-      .post("/sessions")
-      .send({
-        email,
-        password,
-      });
+    const loginResponse = await request(app).post("/sessions").send({
+      email,
+      password,
+    });
 
     token = loginResponse.body.token;
   });
 
-  test("Editar usuario", async () => {
+  test("Editar usuário", async () => {
     const { name, email, password, is_teacher } = await factory.attrs("User");
     const oldPassword = userData.password;
 
@@ -64,21 +60,17 @@ describe("Testes de update de informaçẽos do usuario", () => {
   });
 
   test("Validação de autenticação", async () => {
-    const response = await request(app)
-      .put("/users")
-      .send({});
+    const response = await request(app).put("/users").send({});
 
-    expect(response.body.error).toBe("Autenticação necessaria");
+    expect(response.body.error).toBe("Autenticação necessária");
   });
 
-  test("Verificar se já existe um usuario com o novo email enviado", async () => {
+  test("Verificar se já existe um usuário com o novo email enviado", async () => {
     const extraUserData = await factory.attrs("User", {
       email: "testmail@gmail.com",
     });
 
-    await request(app)
-      .post("/users")
-      .send(extraUserData);
+    await request(app).post("/users").send(extraUserData);
 
     const response = await request(app)
       .put("/users")
@@ -88,7 +80,7 @@ describe("Testes de update de informaçẽos do usuario", () => {
       });
 
     expect(response.body.error).toBe(
-      "Este email já esta cadastrado para outro usuario"
+      "Este email já esta cadastrado para outro usuário"
     );
   });
 
