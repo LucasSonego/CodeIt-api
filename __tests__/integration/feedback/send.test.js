@@ -18,6 +18,7 @@ describe("Testes de envio de feedback", () => {
   };
   let answer = {
     code: "function test()",
+    language: "javascript",
   };
 
   let feedback = {
@@ -101,10 +102,11 @@ describe("Testes de envio de feedback", () => {
     expect(response.body.code).toBe(answer.code);
     expect(response.body.feedback).toBe(feedback.feedback);
     expect(response.body.feedback_code).toBe(feedback.code);
+    expect(response.body).toHaveProperty("feedback_at");
     expect(!!response.body.accepted_at).toBe(feedback.accepted);
   });
 
-  test("Vereficar se a tarefa existe", async () => {
+  test("Verificar se a tarefa existe", async () => {
     const response = await request(app)
       .put(`/feedback/~invalid~`)
       .set("Authorization", "Bearer " + teacher.token)
@@ -122,7 +124,7 @@ describe("Testes de envio de feedback", () => {
 
     expect(response.status).toBe(403);
     expect(response.body.error).toBe(
-      "Você não tem premissão para dar feedback para as tarefas desta disciplina"
+      "Você não tem permissão para dar feedback para as tarefas desta disciplina"
     );
   });
 

@@ -20,7 +20,7 @@ class SessionController {
     const user = await User.findOne({ where: { email } });
     if (!user || !(await user.checkPassword(password))) {
       return res.status(401).json({
-        error: "Usuario ou senha inválidos",
+        error: "Usuário ou senha inválidos",
       });
     }
 

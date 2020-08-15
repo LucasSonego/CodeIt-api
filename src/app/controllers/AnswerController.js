@@ -10,6 +10,7 @@ class AnswerController {
   async store(req, res) {
     const schema = yup.object().shape({
       code: yup.string().required(),
+      language: yup.string().required(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -20,7 +21,14 @@ class AnswerController {
 
     const [task, userEnrolled, alreadyAnswered] = await Promise.all([
       Task.findByPk(req.params.task, {
-        attributes: ["id", "title", "description", "code", "closed_at"],
+        attributes: [
+          "id",
+          "title",
+          "description",
+          "code",
+          "language",
+          "closed_at",
+        ],
       }),
       Enrollment.findOne({ where: { student_id: req.userId } }),
       Answer.findOne({
@@ -47,23 +55,32 @@ class AnswerController {
       });
     }
 
-    const { id, code } = await Answer.create({
+    if (task.language && task.language !== req.body.language) {
+      return res.status(400).json({
+        error: "A resposta deve ser escrita na linguagem definida na tarefa",
+      });
+    }
+
+    const { id, code, language } = await Answer.create({
       id: `${req.params.task}${req.userId}`,
       task_id: req.params.task,
       user_id: req.userId,
       code: req.body.code,
+      language: req.body.language,
     });
 
     return res.status(200).json({
       id,
       task,
       code,
+      language,
     });
   }
 
   async update(req, res) {
     const schema = yup.object().shape({
       code: yup.string().required(),
+      language: yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -74,12 +91,19 @@ class AnswerController {
 
     const answer = await Answer.findOne({
       where: { user_id: req.userId, task_id: req.params.task },
-      attributes: ["id", "code", "accepted_at"],
+      attributes: ["id", "code", "language", "accepted_at"],
       include: [
         {
           model: Task,
           as: "task",
-          attributes: ["id", "title", "description", "code", "closed_at"],
+          attributes: [
+            "id",
+            "title",
+            "description",
+            "code",
+            "language",
+            "closed_at",
+          ],
         },
       ],
     });
@@ -96,16 +120,109 @@ class AnswerController {
       });
     }
 
-    await answer.update({ code: req.body.code });
+    if (
+      req.body.language &&
+      answer.task.language &&
+      answer.task.language !== req.body.language
+    ) {
+      return res.status(400).json({
+        error: "A resposta deve ser escrita na linguagem definida na tarefa",
+      });
+    }
+
+    let newAnswer = {};
+    if (req.body.code && req.body.language) {
+      newAnswer = {
+        code: req.body.code,
+        language: req.body.language,
+      };
+    } else {
+      newAnswer = {
+        code: req.body.code,
+      };
+    }
+
+    await answer.update(newAnswer);
+
+    let language = req.body.language
+      ? "" + req.body.language
+      : "" + answer.language;
 
     return res.json({
       id: answer.id,
       task: answer.task,
       code: req.body.code,
+      language,
     });
   }
 
   async index(req, res) {
+    if (req.query.id) {
+      const answer = await Answer.findByPk(req.query.id, {
+        attributes: [
+          "id",
+          "code",
+          "language",
+          "feedback",
+          "feedback_code",
+          "feedback_at",
+          "feedback_at",
+          "created_at",
+          "updated_at",
+          "accepted_at",
+        ],
+        include: [
+          {
+            model: Task,
+            as: "task",
+            attributes: [
+              "id",
+              "title",
+              "description",
+              "code",
+              "language",
+              "closed_at",
+            ],
+            paranoid: false,
+            include: [
+              {
+                model: Discipline,
+                as: "discipline",
+                attributes: ["id", "name"],
+                paranoid: false,
+                include: [
+                  {
+                    model: User,
+                    as: "teacher",
+                    attributes: ["id", "name", "email"],
+                  },
+                ],
+              },
+            ],
+          },
+          { model: User, as: "student", attributes: ["id", "name", "email"] },
+        ],
+      });
+
+      if (!answer) {
+        return res.status(404).json({
+          error: "Não há nenhuma reposta com este ID",
+        });
+      }
+
+      if (
+        answer.task.discipline.teacher.id !== req.userId &&
+        answer.student.id !== req.userId
+      ) {
+        return res.status(401).json({
+          error:
+            "A resposta so pode ser vista por seu autor e pelo professor que criou a tarefa",
+        });
+      }
+
+      return res.json(answer);
+    }
+
     const task = await Task.findByPk(req.params.task, {
       attributes: ["id"],
       include: [
@@ -125,7 +242,15 @@ class AnswerController {
         {
           model: Answer,
           as: "answers",
-          attributes: ["code", "feedback", "feedback_code", "accepted_at"],
+          attributes: [
+            "code",
+            "language",
+            "feedback",
+            "feedback_code",
+            "feedback_at",
+            "accepted_at",
+            "updated_at",
+          ],
           include: [
             {
               model: User,

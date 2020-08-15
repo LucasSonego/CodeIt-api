@@ -24,3 +24,4 @@ import "./answers/update.test";
 import "./answers/list.test";
 
 import "./feedback/send.test";
+import "./feedback/list.test";

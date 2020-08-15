@@ -20,14 +20,16 @@
   - [Criar](#Criar-tarefa)
   - [Editar](#Editar-tarefa)
   - [Listar](#Listar-tarefas)
-  - [Fechar](#Fechar-tarefa-\(não-aceitar-mais-respostas\))
-  - [Reabrir](#Reabrir-tarefa-\(voltar-a-aceitar-respostas\))
+  - [Fechar](#Fechar-tarefa-não-aceitar-mais-respostas)
+  - [Reabrir](#Reabrir-tarefa-voltar-a-aceitar-respostas)
 - [Respostas](#Respostas)
   - [Enviar](#Enviar-resposta)
   - [Editar](#Editar-resposta)
   - [Buscar](#Buscar-resposta)
 - [Feedback](#Feedback)
   - [Enviar](#Enviar-feedback)
+  - [Listar](#Listar-respostas-com-feedback)
+  
 
 ## Usuários
 
@@ -428,7 +430,7 @@ Com _query_ `teacher`:
 ]
 ```
 
-Com _query_ `id`:
+Com _query_ `id` (para o professor vinculado a disciplina):
 
 ```json
 {
@@ -457,6 +459,20 @@ Com _query_ `id`:
       }
     }
   ]
+}
+```
+
+Com _query_ `id` (para um estudante):
+
+```json
+{
+  "id": "2020D1",
+  "name": "Disciplina 1",
+  "teacher": {
+    "id": "654321",
+    "name": "Teacher 1",
+    "email": "teacher1@ufpr.br"
+  }
 }
 ```
 
@@ -536,7 +552,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 {
     "title": "Task 1",
     "description": "Description for task 1",
-    "code": "function example()"
+    "code": "function example()",
+    "language": "javascript"
 }
 ```
 
@@ -545,6 +562,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 | title       | String       | -          | sim         |
 | description | String       | -          | sim         |
 | code        | String       | -          | não         |
+| language    | String       | -          | não         |
 
 
 
@@ -564,7 +582,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   },
   "title": "Task 1",
   "description": "Description for task 1",
-  "code": "function example()"
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -580,9 +599,10 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 ```json
 {
-    "title": "Task 1",
-    "description": "Description for task 1",
-    "code": "function example()"
+  "title": "Task 1",
+  "description": "Description for task 1",
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -591,6 +611,7 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 | title       | String       | -          | não         |
 | description | String       | -          | não         |
 | code        | String       | -          | não         |
+| language    | String       | -          | não         |
 
 
 
@@ -610,7 +631,8 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   },
   "title": "Task 1",
   "description": "Description for task 1",
-  "code": "function example()"
+  "code": "function example()",
+  "language": "javascript"
 }
 ```
 
@@ -620,9 +642,9 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
 
 #### Requisição
 
-Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1` _*id da disciplina_
+Método: `GET`<br>Rota: `/tasks`<br>Query params (opcionais): <br>`discipline=2020D1` _*id da disciplina_<br>`id=2020D1wAFgrq` _*id da tarefa_
 
-#### Corpo da resposta (sem query)
+#### Corpo da resposta (sem query, para um estudante)
 
 ```json
 [
@@ -635,6 +657,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": null,
         "answer": null
       }
@@ -649,6 +672,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": null,
         "answer": null
       },
@@ -657,18 +681,122 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
         "title": "Teste",
         "description": "Mussum Ipsum, cacilds vidis litro abertis.",
         "code": "function teste(){}",
+        "language": "javascript",
         "closed_at": "2020-05-20T18:02:35.757Z",
         "answer": {
           "code": "function teste()",
+          "language": "javascript",
           "feedback": null,
           "feedback_code": null,
-          "accepted_at": "2020-05-18T00:10:48.309Z"
+          "feedback_at": null,
+          "updated_at": "2020-05-18T00:10:48.309Z",
+          "accepted_at": "2020-05-18T00:10:48.309Z",
         }
       }
     ]
   }
 ]
 ```
+
+#### Corpo da resposta (sem query, para um professor)
+
+```json
+[
+  {
+    "id": "TD1",
+    "name": "Test Discipline 1",
+    "tasks": [
+      {
+        "id": "TD1di5mxL",
+        "title": "Task 1",
+        "description": "Task 1 desctiption",
+        "code": "function teste(){}",
+        "language": "javascript",
+        "created_at": "2020-05-17T22:20:50.982Z",
+        "answers": [
+          {
+            "id": "TD1di5mxL123456",
+            "code": "function test()",
+            "language": "javascript",
+            "feedback": null,
+            "feedback_code": null,
+            "feedback_at": null,
+            "created_at": "2020-05-17T22:22:18.801Z",
+            "updated_at": "2020-05-18T00:10:48.310Z",
+            "accepted_at": "2020-05-18T00:10:48.309Z",
+            "student": {
+              "id": "123456",
+              "name": "Test User",
+              "email": "testuser@ufpr.br"
+            }
+          },
+          {
+            "id": "TD1di5mxL112233",
+            "code": "function test()",
+            "language": "javascript",
+            "feedback": null,
+            "feedback_code": null,
+            "feedback_at": null,
+            "created_at": "2020-05-18T00:10:48.309Z",
+            "updated_at": "2020-05-18T00:10:48.309Z",
+            "accepted_at": null,
+            "student": {
+              "id": "112233",
+              "name": "Test User 2",
+              "email": "testuser2@ufpr.br"
+            }
+          }
+        ]
+      },
+      {
+        "id": "TD1JwqUcr",
+        "title": "Task 2",
+        "description": "Task 2 description",
+        "code": "function test(){}",
+        "language": "javascript",
+        "created_at": "2020-05-19T01:44:06.797Z",
+        "answers": []
+      }
+    ]
+  },
+  {
+    "id": "TD2",
+    "name": "Test Discipline 2",
+    "tasks": [
+      {
+        "id": "TD2Mzc2NT",
+        "title": "Tarefa respondida",
+        "description": "tarefa respondida",
+        "code": null,
+        "language": null,
+        "created_at": "2020-05-19T23:05:16.038Z",
+        "answers": [
+          {
+            "id": "TD2Mzc2NT123456",
+            "code": "function test()",
+            "language": "javascript",
+            "feedback": null,
+            "feedback_code": null,
+            "feedback_at": null,
+            "created_at": "2020-06-18T17:02:17.238Z",
+            "updated_at": "2020-06-19T20:56:18.500Z",
+            "accepted_at": null,
+            "student": {
+              "id": "123456",
+              "name": "Test User",
+              "email": "testuser@ufpr.br"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+```
+
+
+
+
 
 
 
@@ -682,6 +810,7 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
       "title": "Teste",
       "description": "Mussum Ipsum, cacilds vidis litro abertis.",
       "code": "function teste(){}",
+      "language": "javascript",
       "closed_at": null
     }
   ],
@@ -691,9 +820,44 @@ Método: `GET`<br>Rota: `/tasks`<br>Query params (opcional): `discipline=2020D1`
       "title": "Teste",
       "description": "Mussum Ipsum, cacilds vidis litro abertis.",
       "code": "function teste(){}",
+      "language": "javascript",
       "closed_at": "2020-05-20T18:02:35.757Z"
     }
   ]
+}
+```
+
+
+
+#### Corpo da resposta (com query `id=2020D1JwqUcr`)
+
+```json
+{
+  "id": "2020D1JwqUcr",
+  "title": "Teste",
+  "description": "Mussum Ipsum, cacilds vidis litro abertis.\r\n",
+  "code": "function teste(){}",
+  "language": "javascript",
+  "closed_at": null,
+  "discipline": {
+    "id": "2020D1",
+    "name": "Test discipline 1",
+    "teacher": {
+      "id": "654321",
+      "name": "Test Teacher",
+      "email": "testteacher@ufpr.br"
+    }
+  },
+  "answer": {
+    "id": "2020D1JwqUcr123456",
+    "code": "function teste()",
+    "language": "javascript",
+    "feedback": null,
+    "feedback_code": null,
+    "feedback_at": "2020-05-18T00:10:48.309Z",  
+    "accepted_at": "2020-05-18T00:10:48.309Z"
+  },
+  "user_enrolled": true
 }
 ```
 
@@ -811,7 +975,7 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
 
 ### Buscar resposta
 
-#### Corpo da requisição
+#### Corpo da requisição (busca por meio do _id_ da tarefa)
 
 Método: `GET`<br>Rota: `/answers/2020D1JwqUcr` _*id da tarefa_
 
@@ -822,9 +986,12 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
 ```json
 {
   "code": "function example()",
+  "language": "javascript",
   "feedback": "Nice",
   "feedback_code": null,
+  "feedback_at": "2020-05-18T00:10:48.309Z",
   "accepted_at": "2020-05-18T00:10:48.309Z",
+  "updated_at": "2020-05-18T00:09:23.623Z",
   "student": {
     "id": "123456",
     "name": "Test User",
@@ -832,6 +999,54 @@ O cabeçalho da requisição deve conter o token de autenticação de um estudan
   }
 }
 ```
+
+
+
+#### Corpo da requisição (busca por meio do _id_ da resposta)
+
+Método: `GET`<br>Rota: `/answers`<br>Query params: `id: TD2-5123456 `  _*id da resposta_
+
+O cabeçalho da requisição deve conter o token de autenticação de um estudante matriculadona disciplina em que a tarefa foi criada
+
+#### Corpo da resposta
+
+```json
+{
+  "id": "TD2-5123456",
+  "code": "function teste(parametro) {\n  if (parametro === \"teste\") {\n    console.log(\"teste\");\n  }\n}\n\nteste(\"teste\");",
+  "language": "javascript",
+  "feedback": null,
+  "feedback_code": null,
+  "feedback_at": null,
+  "created_at": "2020-06-18T17:02:17.238Z",
+  "updated_at": "2020-06-19T20:56:18.500Z",
+  "accepted_at": null,
+  "task": {
+    "id": "TD2-5",
+    "title": "Tarefa teste 5",
+    "description": "tarefa teste 5",
+    "code": "function teste()",
+    "language": null,
+    "closed_at": "2020-06-29T19:09:52.880Z",
+    "discipline": {
+      "id": "TD2",
+      "name": "Testes de Tarefas",
+      "teacher": {
+        "id": "654321",
+        "name": "Test Teacher",
+        "email": "testteacher@ufpr.br"
+      }
+    }
+  },
+  "student": {
+    "id": "123456",
+    "name": "Test User",
+    "email": "testuser@ufpr.br"
+  }
+}
+```
+
+
 
 
 
@@ -871,5 +1086,82 @@ O cabeçalho da requisição deve conter o token de autenticação do professor 
   "feedback_code": "function someCode()",
   "accepted_at": "2020-05-18T00:10:48.309Z"
 }
+```
+
+
+
+### Listar respostas com feedback
+
+#### Requisição
+
+Método: `GET`<br>Rota: `/feedback`
+
+O cabeçalho da requisição deve conter um token de autenticação.
+
+#### Corpo da resposta (para um estudante)
+
+(Lista os feedbacks de todas as respostas enviadas pelo estudante)
+
+```json
+[
+  {
+    "id":"TD1di5mxL123456",
+    "code": "function answer()",
+    "language": "javascript",
+    "feedback": "All ok",
+    "feedback_code": null,
+    "feedback_at": "2020-06-24T20:43:14.510Z",
+    "accepted_at": "2020-06-24T20:43:14.510Z",
+    "updated_at": "2020-05-11T00:06:07.775Z",
+    "task": {
+      "id": "TD1di5mxL",
+      "title": "Test",
+      "description": "test",
+      "code": "function test(){}",
+      "language": null,
+      "closed_at": null,
+      "discipline": {
+        "id": "TD1",
+        "name": "Test discipline 1"
+      }
+    }
+  }
+]
+```
+
+#### Corpo da resposta (para um professor)
+
+(Lista todos os feedbacks enviados por esse professor)
+
+```json
+[
+  {
+    id: "TD1di5mxL123456",
+    code: "function answer()",
+    language: "javascript",
+    feedback: "All ok",
+    feedback_code: null,
+    feedback_at: "2020-06-24T20:43:14.510Z",
+    accepted_at: "2020-06-24T20:43:14.510Z",
+    updated_at: "2020-05-11T00:06:07.775Z",
+    student: {
+      id: "123456",
+      name: "Test User",
+      email: "testuser@ufpr.br"
+    },
+    task: {
+      id: "TD1di5mxL",
+      title: "Test",
+      description: "test",
+      code: "function test(){}",
+      language: null,
+      closed_at: null,
+      discipline: {
+        id: "TD1",
+        name: "Test Discipline 1"
+      }
+    }
+  }
+];
 ```
 

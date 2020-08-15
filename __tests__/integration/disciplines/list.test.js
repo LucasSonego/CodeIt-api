@@ -85,7 +85,7 @@ describe("Testes de busca e listagem de disciplinas", () => {
       .set("Authorization", "Bearer " + student.token);
   });
 
-  test("Listar todas as disciplinas que o usuario está matriculado e as outras disciplinas", async () => {
+  test("Listar todas as disciplinas que o usuário está matriculado e as outras disciplinas", async () => {
     const response = await request(app)
       .get("/disciplines")
       .set("Authorization", "Bearer " + student.token);
@@ -95,6 +95,36 @@ describe("Testes de busca e listagem de disciplinas", () => {
     expect(response.body.enrolled_disciplines.length).toBe(1);
     expect(response.body).toHaveProperty("disciplines");
     expect(response.body.disciplines.length).toBe(1);
+  });
+
+  test("Busca por id da disciplina (professor vinculado à disciplina)", async () => {
+    const response = await request(app)
+      .get("/disciplines")
+      .set("Authorization", "Bearer " + teacher1.token)
+      .query({ id: discipline1.id });
+
+    expect(response.body).not.toHaveProperty("error");
+    expect(response.body.id).toBe(discipline1.id);
+    expect(response.body.name).toBe(discipline1.name);
+    expect(response.body.teacher.id).toBe(teacher1.id);
+    expect(response.body.teacher.name).toBe(teacher1.name);
+    expect(response.body.teacher.email).toBe(teacher1.email);
+    expect(response.body).toHaveProperty("enrollments");
+    expect(response.body).toHaveProperty("tasks");
+  });
+
+  test("Busca por id da disciplina (estudante)", async () => {
+    const response = await request(app)
+      .get("/disciplines")
+      .set("Authorization", "Bearer " + student.token)
+      .query({ id: discipline1.id });
+
+    expect(response.body).not.toHaveProperty("error");
+    expect(response.body.id).toBe(discipline1.id);
+    expect(response.body.name).toBe(discipline1.name);
+    expect(response.body.teacher.id).toBe(teacher1.id);
+    expect(response.body.teacher.name).toBe(teacher1.name);
+    expect(response.body.teacher.email).toBe(teacher1.email);
   });
 
   test("Buscar disciplinas de um professor especifico", async () => {

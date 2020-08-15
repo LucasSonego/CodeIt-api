@@ -28,7 +28,7 @@ class UserController {
     });
     if (emailAlreadyUsed) {
       return res.status(409).json({
-        error: "Este email já esta cadastrado para outro usuario",
+        error: "Este email já esta cadastrado para outro usuário",
       });
     }
 
@@ -37,7 +37,7 @@ class UserController {
     });
     if (idAlreadyUsed) {
       return res.status(409).json({
-        error: "Este ID já esta cadastrado para outro usuario",
+        error: "Este ID já esta cadastrado para outro usuário",
       });
     }
 
@@ -84,7 +84,7 @@ class UserController {
       });
       if (emailAlreadyUsed) {
         return res.status(409).json({
-          error: "Este email já esta cadastrado para outro usuario",
+          error: "Este email já esta cadastrado para outro usuário",
         });
       }
     }

@@ -17,6 +17,13 @@ describe("Testes de envio de respostas", () => {
     code: "function sucoDeCevadiss(){}",
   };
 
+  let task2 = {
+    title: "Tarefa com linguagem especificada",
+    description: "Tarefa para testar a restrção de linguagem",
+    code: "function teste()",
+    language: "javascript",
+  };
+
   beforeAll(async () => {
     await truncate();
 
@@ -66,12 +73,19 @@ describe("Testes de envio de respostas", () => {
       .post(`/enrollments/${discipline.id}`)
       .set("Authorization", "Bearer " + student.token);
 
-    const taskResponse = await request(app)
-      .post(`/tasks/${discipline.id}`)
-      .set("Authorization", "Bearer " + teacher.token)
-      .send({ ...task });
+    const [taskResponse, task2Response] = await Promise.all([
+      request(app)
+        .post(`/tasks/${discipline.id}`)
+        .set("Authorization", "Bearer " + teacher.token)
+        .send({ ...task }),
+      request(app)
+        .post(`/tasks/${discipline.id}`)
+        .set("Authorization", "Bearer " + teacher.token)
+        .send({ ...task2 }),
+    ]);
 
     task = { ...task, id: taskResponse.body.id };
+    task2 = { ...task2, id: task2Response.body.id };
   });
 
   test("Enviar uma resposta para uma tarefa", async () => {
@@ -80,6 +94,7 @@ describe("Testes de envio de respostas", () => {
       .set("Authorization", "Bearer " + student.token)
       .send({
         code: "function testing()",
+        language: "javascript",
       });
 
     expect(response.status).toBe(200);
@@ -88,7 +103,9 @@ describe("Testes de envio de respostas", () => {
     expect(response.body.task.title).toBe(task.title);
     expect(response.body.task.description).toBe(task.description);
     expect(response.body.task.code).toBe(task.code);
+    expect(response.body.task.language).toBe(null);
     expect(response.body.code).toBe("function testing()");
+    expect(response.body.language).toBe("javascript");
   });
 
   test("Verificar se o estudante já enviou uma resposta para a tarefa", async () => {
@@ -97,6 +114,7 @@ describe("Testes de envio de respostas", () => {
       .set("Authorization", "Bearer " + student.token)
       .send({
         code: "function testing()",
+        language: "javascript",
       });
 
     expect(response.status).toBe(409);
@@ -122,10 +140,26 @@ describe("Testes de envio de respostas", () => {
       .set("Authorization", "Bearer " + student.token)
       .send({
         code: "function testing()",
+        language: "javascript",
       });
 
     expect(response.status).toBe(404);
     expect(response.body.error).toBe("Não há nenhuma tarefa com este id");
+  });
+
+  test("Verificar se a resposta foi escrita na linguagem especificada na tarefa", async () => {
+    const response = await request(app)
+      .post(`/answers/${task2.id}`)
+      .set("Authorization", "Bearer " + student.token)
+      .send({
+        code: "public static final void wtf(String parameter){}",
+        language: "java",
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.error).toBe(
+      "A resposta deve ser escrita na linguagem definida na tarefa"
+    );
   });
 
   test("Verificar se o estudante está matriculado na disciplina a qual a tarefa pertence", async () => {
@@ -138,6 +172,7 @@ describe("Testes de envio de respostas", () => {
       .set("Authorization", "Bearer " + student.token)
       .send({
         code: "function testing()",
+        language: "javascript",
       });
 
     expect(response.status).toBe(401);
