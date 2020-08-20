@@ -1,0 +1,22 @@
+name: Deploy workflow
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  job_1:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: create new biuld
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.HOST }}
+          port: ${{ secrets.PORT }}
+          username: ${{ secrets.USER }}
+          key: ${{ secrets.KEY }}
+          script: |
+            cd codeit
+            git pull origin master
+            yarn
