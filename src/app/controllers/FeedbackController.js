@@ -125,6 +125,7 @@ class FeedbackController {
               "language",
               "closed_at",
             ],
+            required: true,
             paranoid: false,
             include: [
               {
